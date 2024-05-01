@@ -1,11 +1,11 @@
-import CenterLanding from "@/components/landing/CenterLanding";
+import SelectMode from "@/components/SelectMode";
 import React from "react";
 import styled from "styled-components";
 
-function Home() {
+function Start() {
   return (
     <Container>
-      <CenterLanding />
+      <SelectMode />
     </Container>
   );
 }
@@ -20,4 +20,4 @@ const Container = styled.div`
   background-color: #fefdff;
 `;
 
-export default Home;
+export default Start;

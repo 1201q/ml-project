@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const CurrentStage = () => {
-  const stage = ["이미지 입력", "이미지 입력", "결과"];
+  const stage = ["선택", "이미지 입력", "결과"];
   return (
     <Container>
       <StageContainer>

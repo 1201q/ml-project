@@ -85,6 +85,7 @@ video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+  box-sizing: border-box;
 }
 /* HTML5 display-role reset for older browsers */
 article,
@@ -103,6 +104,7 @@ section {
 body {
   line-height: 1;
   font-family: "Pretendard Variable";
+  font-display: swap;
 }
 ol,
 ul {
@@ -122,4 +124,36 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+button,
+input,
+textarea {
+  font-family: "Pretendard Variable";
+  font-feature-settings: "tnum";
+  font-display: swap;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  box-sizing: border-box;
+}
+
+button {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  background: none;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
