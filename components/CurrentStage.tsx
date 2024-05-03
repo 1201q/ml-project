@@ -17,7 +17,7 @@ const CurrentStage = () => {
 };
 
 const Container = styled.div`
-  width: calc(100% - 32px);
+  width: calc(100%);
   padding: 0px 16px;
   height: 80px;
   display: flex;

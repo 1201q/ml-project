@@ -6,19 +6,8 @@ const FaceCapture = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const recogBoxRef = useRef<HTMLCanvasElement>(null);
 
-  const [isInit, setIsInit] = useState(false);
-  const [isVideoReady, setIsVideoReady] = useState(false);
-
-  const init = async () => {
-    await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-      faceapi.nets.faceExpressionNet.loadFromUri("/models"),
-      faceapi.nets.ageGenderNet.loadFromUri("/models"),
-    ]);
-    setIsInit(true);
-  };
+  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   const getUserVideo = () => {
     navigator.mediaDevices
@@ -31,7 +20,8 @@ const FaceCapture = () => {
         if (video) {
           video.srcObject = stream;
           video.play();
-          setIsVideoReady(true);
+          setVideoStream(stream);
+          console.log(stream);
         }
       })
       .catch((error) => {
@@ -50,7 +40,8 @@ const FaceCapture = () => {
 
       faceapi.matchDimensions(recogBox, displaySize);
 
-      setInterval(async () => {
+      const timer = setInterval(async () => {
+        console.log("타이머");
         const detections = await faceapi
           .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks();
@@ -66,14 +57,24 @@ const FaceCapture = () => {
           context.clearRect(0, 0, recogBox.width, recogBox.height);
           faceapi.draw.drawDetections(recogBox, resizedDetections);
         }
-      }, 50);
+      }, 100);
+
+      setTimer(timer);
     }
   };
 
   useEffect(() => {
     getUserVideo();
-    init();
-  }, [videoRef]);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timer && videoStream) {
+        clearInterval(timer);
+        videoStream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [videoStream, timer]);
 
   return (
     <Container>
@@ -118,6 +119,12 @@ const CaptureContainer = styled.div`
   max-width: 640px;
 
   position: relative;
+`;
+
+const Button = styled.button`
+  width: 100px;
+  height: 30px;
+  background-color: red;
 `;
 
 export default FaceCapture;

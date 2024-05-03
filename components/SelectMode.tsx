@@ -38,7 +38,7 @@ const SelectMode = () => {
           onHoverEnd={() => {
             setIsCamHover(false);
           }}
-          isOppositeHover={isFileHover}
+          $isoppositehover={isFileHover}
         >
           <SelectHeader>이미지를 촬영할게요</SelectHeader>
           <Image
@@ -60,7 +60,7 @@ const SelectMode = () => {
           }}
           whileTap={{ scale: 0.95 }}
           bg={"#cfddfe"}
-          isOppositeHover={isCamHover}
+          $isoppositehover={isCamHover}
         >
           <SelectHeader>기존의 이미지를 가져올게요</SelectHeader>
           <Image
@@ -108,7 +108,7 @@ const SelectContainer = styled(motion.div)`
   }
 `;
 
-const Select = styled(motion.div)<{ bg: string; isOppositeHover: boolean }>`
+const Select = styled(motion.div)<{ bg: string; $isoppositehover: boolean }>`
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -120,13 +120,13 @@ const Select = styled(motion.div)<{ bg: string; isOppositeHover: boolean }>`
   box-shadow: inset 0 -1px 0 0 rgba(47, 43, 67, 0.1),
     0 1px 3px 0 rgba(47, 43, 67, 0.1);
 
-  opacity: ${(props) => (props.isOppositeHover ? "0.4" : "1")};
+  opacity: ${(props) => (props.$isoppositehover ? "0.4" : "1")};
   transition-property: opacity;
   transition-duration: 0.2s;
 
   img {
     transform: ${(props) =>
-      props.isOppositeHover ? "scale(0.8)" : "scale(1)"};
+      props.$isoppositehover ? "scale(0.8)" : "scale(1)"};
     transition-duration: 0.2s;
   }
 
