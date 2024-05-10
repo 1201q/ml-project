@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
+import Loading from "@/components/Loading";
 
 function Capture() {
   const router = useRouter();
@@ -33,13 +34,6 @@ function Capture() {
       <CurrentStage />
       {isInit && isCameraVisible && <FaceCapture />}
 
-      {/* <button
-        onClick={() => {
-          router.push("/result");
-        }}
-      >
-        찰칵
-      </button> */}
       {isInit ? "설정완료" : "설정미"}
       <button
         onClick={() => {
@@ -48,6 +42,7 @@ function Capture() {
       >
         끄기
       </button>
+      {/* <Loading isLoading={false} /> */}
     </Container>
   );
 }
@@ -58,6 +53,12 @@ const Container = styled.div`
   background-color: white;
   display: flex;
   flex-direction: column;
+`;
+
+const LoadingFaceCapture = styled.div`
+  width: 100%;
+  max-width: 640px;
+  border-radius: 10px;
 `;
 
 export default Capture;

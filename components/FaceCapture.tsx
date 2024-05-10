@@ -121,10 +121,4 @@ const CaptureContainer = styled.div`
   position: relative;
 `;
 
-const Button = styled.button`
-  width: 100px;
-  height: 30px;
-  background-color: red;
-`;
-
 export default FaceCapture;
