@@ -1,12 +1,11 @@
 import CurrentStage from "@/components/CurrentStage";
 import FaceCapture from "@/components/FaceCapture";
-import Header from "@/components/Header";
+
 import { useRouter } from "next/router";
 
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
-import Loading from "@/components/Loading";
 
 function Capture() {
   const router = useRouter();
@@ -30,7 +29,6 @@ function Capture() {
 
   return (
     <Container>
-      <Header />
       <CurrentStage />
       {isInit && isCameraVisible && <FaceCapture />}
 

@@ -57,8 +57,8 @@ const Slider = () => {
 const Container = styled.div`
   display: flex;
   align-items: center;
-
   position: relative;
+  pointer-events: none;
 `;
 
 const Line = styled.ul`

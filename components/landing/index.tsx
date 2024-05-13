@@ -21,9 +21,9 @@ const LandingPage = () => {
       <BottomContainer>
         <Button
           whileHover={{ filter: "brightness(0.8)" }}
-          whileTap={{ scale: 0.97 }}
+          whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
           onClick={() => {
-            router.push("/start");
+            router.push("/terms");
           }}
         >
           시작하기
@@ -106,6 +106,7 @@ const Button = styled(motion.button)`
   color: white;
   font-size: 18px;
   font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const BottomSmallText = styled.p`

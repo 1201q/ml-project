@@ -32,6 +32,8 @@ const Container = styled.div<StyleType>`
   aspect-ratio: 1 / 1;
   border-radius: 30px;
   overflow: hidden;
+
+  user-select: none;
 `;
 
 export default Avatar;

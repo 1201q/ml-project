@@ -1,9 +1,23 @@
 import styled from "styled-components";
+import Back from "@/public/back.svg";
+import { useRouter } from "next/router";
 
-const Header = () => {
+interface PropsType {
+  currentMenu?: string;
+}
+const Header: React.FC<PropsType> = ({ currentMenu }) => {
+  const router = useRouter();
   return (
     <Container>
-      <div>우모못</div>
+      <BackButton
+        onClick={() => {
+          router.back();
+        }}
+      >
+        <Back width={25} height={25} />
+      </BackButton>
+      {currentMenu && <Current>{currentMenu}</Current>}
+      <RightContainer></RightContainer>
     </Container>
   );
 };
@@ -11,23 +25,29 @@ const Header = () => {
 const Container = styled.header`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  width: 100%;
   height: 60px;
-  padding: 0px 30px;
-  font-size: 25px;
-  font-weight: 800;
-  letter-spacing: -2px;
-  z-index: 100;
-  color: black;
-  background-color: white;
+  padding: 0px 20px;
+  justify-content: space-between;
+  position: relative;
+`;
 
-  backdrop-filter: blur(10px);
+const RightContainer = styled.div``;
 
-  @media screen and (max-width: 500px) {
-    padding: 0px 16px;
+const Current = styled.p`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+  font-weight: 600;
+`;
+
+const BackButton = styled.button`
+  height: 100%;
+  padding-right: 10px;
+
+  svg {
+    fill: #b7bfc7;
+    margin-left: -5px;
   }
 `;
 
