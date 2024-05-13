@@ -6,12 +6,12 @@ import useSize from "@/utils/useSize";
 
 const CaptureImagePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const { size, isResizing, init } = useSize(videoContainerRef);
+  const { isResizing, init } = useSize(videoContainerRef);
 
   return (
     <Container>
       <CameraContainer ref={videoContainerRef}>
-        {size && !isResizing && init && (
+        {!isResizing && init && (
           <Webcam
             mirrored={true}
             videoConstraints={{
@@ -21,7 +21,6 @@ const CaptureImagePage = () => {
         )}
       </CameraContainer>
       <ControllerContainer>
-        {size?.width} /{size?.height} / {size?.aspectRatio}
         <CaptureBtnContainer>
           <CaptureButton whileTap={{ scale: 0.9 }}></CaptureButton>
         </CaptureBtnContainer>
@@ -43,7 +42,7 @@ const CameraContainer = styled.div`
   justify-content: center;
   position: relative;
   width: 100%;
-  height: calc(100% - 250px);
+  height: calc(100% - 300px);
 `;
 
 const ControllerContainer = styled.div`
