@@ -19,7 +19,6 @@ const CaptureImagePage = () => {
               position: "absolute",
               width: "100%",
               height: "100%",
-              objectFit: "cover",
             }}
           />
         )}
@@ -45,11 +44,11 @@ const Container = styled(motion.div)`
 `;
 
 const CameraContainer = styled.div`
-  height: 70%;
+  height: 65%;
   position: relative;
 `;
 const ControllerContainer = styled.div`
-  height: 30%;
+  height: 35%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,10 +74,10 @@ const CaptureBtnContainer = styled.div`
 `;
 
 const CameraBox = styled.canvas`
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.7);
 
-  width: calc(100% - 50px);
-  height: calc(100% - 50px);
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
   position: absolute;
   top: 50%;
   right: 50%;

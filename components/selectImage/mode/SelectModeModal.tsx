@@ -113,7 +113,7 @@ const ModalContainer = styled(motion.div)`
 `;
 
 const ModalTitle = styled.p`
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   padding: 35px 30px 18px 25px;
 `;
@@ -130,7 +130,7 @@ const ModalMenu = styled(motion.div)`
   margin-bottom: 5px;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 500;
   background-color: white;
   -webkit-tap-highlight-color: transparent;
