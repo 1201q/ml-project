@@ -16,7 +16,6 @@ const CaptureImagePage = () => {
             mirrored={true}
             videoConstraints={{
               ...size,
-              aspectRatio: 1,
               facingMode: "user",
             }}
           />
@@ -41,12 +40,10 @@ const Container = styled(motion.div)`
 `;
 
 const CameraContainer = styled.div`
-  height: calc(100dvh - 350px);
+  display: flex;
+  justify-content: center;
   position: relative;
-
-  @media screen and (max-width: 800px) {
-    height: calc(100dvh - 350px);
-  }
+  height: 100%;
 `;
 
 const ControllerContainer = styled.div`
@@ -59,7 +56,6 @@ const ControllerContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
-  background-color: black;
 `;
 
 const CaptureButton = styled(motion.button)`
