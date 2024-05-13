@@ -42,14 +42,14 @@ const CameraContainer = styled.div`
   justify-content: center;
   position: relative;
   width: 100%;
-  height: calc(100% - 300px);
+  height: calc(100% - 180px);
 `;
 
 const ControllerContainer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 200px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
