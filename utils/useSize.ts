@@ -15,9 +15,9 @@ const useSize = (ref: RefObject<HTMLDivElement>) => {
       timeoutRef.current = setTimeout(() => {
         if (ref.current) {
           setSize({
-            width: ref.current.clientWidth,
-            height: ref.current.clientHeight,
-            aspectRatio: ref.current.clientWidth / ref.current.clientHeight,
+            width: ref.current.offsetWidth,
+            height: ref.current.offsetHeight,
+            aspectRatio: ref.current.offsetWidth / ref.current.offsetHeight,
           });
           setIsResizing(false);
         }

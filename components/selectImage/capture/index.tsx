@@ -15,8 +15,7 @@ const CaptureImagePage = () => {
           <Webcam
             mirrored={true}
             videoConstraints={{
-              width: size.width,
-              height: size.height,
+              ...size,
               aspectRatio: 1,
               facingMode: "user",
             }}
