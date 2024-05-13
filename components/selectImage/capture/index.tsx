@@ -14,7 +14,12 @@ const CaptureImagePage = () => {
         {size && !isResizing && init && (
           <Webcam
             mirrored={true}
-            videoConstraints={{ ...size, facingMode: "user" }}
+            videoConstraints={{
+              width: size.width,
+              height: size.height,
+              aspectRatio: 1,
+              facingMode: "user",
+            }}
           />
         )}
       </CameraContainer>
@@ -37,9 +42,14 @@ const Container = styled(motion.div)`
 `;
 
 const CameraContainer = styled.div`
-  height: calc(100% - 150px);
+  height: calc(100dvh - 350px);
   position: relative;
+
+  @media screen and (max-width: 800px) {
+    height: calc(100dvh - 350px);
+  }
 `;
+
 const ControllerContainer = styled.div`
   position: absolute;
   bottom: 0;
