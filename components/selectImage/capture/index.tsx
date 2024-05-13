@@ -1,30 +1,60 @@
 import { motion } from "framer-motion";
 import Webcam from "react-webcam";
 import styled from "styled-components";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSize from "@/utils/useSize";
+
+import ImageViewerModal from "./ImageViewerModal";
 
 const CaptureImagePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  const webcamRef = useRef<Webcam>(null);
+
   const { isResizing, init } = useSize(videoContainerRef);
+  const [isReadyCamera, setIsReadyCamera] = useState(false);
+  const [imgSrc, setImgSrc] = useState<null | string>(null);
+  const [isImgViewerModalOpen, setIsImgViewerModalOpen] = useState(false);
+
+  const onCapture = () => {
+    const img = webcamRef.current?.getScreenshot();
+    if (img) {
+      setImgSrc(img);
+    }
+  };
+
+  useEffect(() => {
+    if (imgSrc) {
+      setIsImgViewerModalOpen(true);
+    }
+  }, [imgSrc]);
 
   return (
     <Container>
       <CameraContainer ref={videoContainerRef}>
         {!isResizing && init && (
           <Webcam
+            ref={webcamRef}
             mirrored={true}
             videoConstraints={{
               facingMode: "user",
+            }}
+            screenshotFormat="image/jpeg"
+            onCanPlay={() => {
+              setIsReadyCamera(true);
             }}
           />
         )}
       </CameraContainer>
       <ControllerContainer>
-        <CaptureBtnContainer>
-          <CaptureButton whileTap={{ scale: 0.9 }}></CaptureButton>
-        </CaptureBtnContainer>
+        {isReadyCamera && (
+          <CaptureBtnContainer>
+            <CaptureButton onClick={onCapture} whileTap={{ scale: 0.9 }} />
+          </CaptureBtnContainer>
+        )}
       </ControllerContainer>
+      {isImgViewerModalOpen && imgSrc && (
+        <ImageViewerModal setIsOpen={setIsImgViewerModalOpen} imgSrc={imgSrc} />
+      )}
     </Container>
   );
 };
