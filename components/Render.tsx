@@ -35,7 +35,7 @@ const Container = styled.div`
 const MobileContainer = styled.main`
   width: 100%;
   max-width: 800px;
-  height: 100%;
+  height: 100dvh;
   background-color: white;
   border-right: 1px solid lightgray;
   border-left: 1px solid lightgray;

@@ -60,11 +60,10 @@ const SelectModeModal = () => {
               alt={"camera"}
               width={35}
               height={35}
-              quality={100}
               style={{
                 marginLeft: "-4px",
                 marginTop: "2px",
-                marginRight: "5px",
+                marginRight: "7px",
               }}
             />
             이미지 촬영하기
@@ -82,8 +81,7 @@ const SelectModeModal = () => {
               alt={"folder"}
               width={35}
               height={35}
-              quality={100}
-              style={{ marginLeft: "-4px", marginRight: "5px" }}
+              style={{ marginLeft: "-4px", marginRight: "7px" }}
             />
             저장소에서 이미지 가져오기
           </ModalMenu>
@@ -115,7 +113,7 @@ const ModalContainer = styled(motion.div)`
 `;
 
 const ModalTitle = styled.p`
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 600;
   padding: 35px 30px 18px 25px;
 `;
@@ -132,8 +130,8 @@ const ModalMenu = styled(motion.div)`
   margin-bottom: 5px;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 500;
   background-color: white;
   -webkit-tap-highlight-color: transparent;
 `;

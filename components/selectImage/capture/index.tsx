@@ -15,13 +15,19 @@ const CaptureImagePage = () => {
           <Webcam
             mirrored={true}
             videoConstraints={{ ...size, facingMode: "user" }}
-            style={{ position: "relative" }}
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              objectFit: "fill",
+            }}
           />
         )}
 
         <CameraBox />
       </CameraContainer>
       <ControllerContainer>
+        {size?.width} /{size?.height} / {size?.aspectRatio}
         <CaptureBtnContainer>
           <CaptureButton whileTap={{ scale: 0.9 }}></CaptureButton>
         </CaptureBtnContainer>
@@ -45,8 +51,10 @@ const CameraContainer = styled.div`
 const ControllerContainer = styled.div`
   height: 30%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: white;
 `;
 
 const CaptureButton = styled(motion.button)`
