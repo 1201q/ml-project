@@ -6,12 +6,12 @@ import useSize from "@/utils/useSize";
 
 const CaptureImagePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const { size, isResizing } = useSize(videoContainerRef);
+  const { size, isResizing, init } = useSize(videoContainerRef);
 
   return (
     <Container>
       <CameraContainer ref={videoContainerRef}>
-        {size && !isResizing && (
+        {size && !isResizing && init && (
           <Webcam
             mirrored={true}
             videoConstraints={{ ...size, facingMode: "user" }}
