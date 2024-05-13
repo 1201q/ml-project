@@ -39,11 +39,11 @@ const Container = styled(motion.div)`
 `;
 
 const CameraContainer = styled.div`
-  height: calc(100% - 200px);
+  height: 70%;
   position: relative;
 `;
 const ControllerContainer = styled.div`
-  height: 200px;
+  height: 30%;
   display: flex;
   align-items: center;
   justify-content: center;
