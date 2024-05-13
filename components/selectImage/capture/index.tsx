@@ -42,6 +42,7 @@ const CameraContainer = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
+  width: 100%;
   height: calc(100% - 250px);
 `;
 
