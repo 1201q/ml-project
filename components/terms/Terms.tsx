@@ -21,13 +21,14 @@ const Terms = () => {
           저장되지 않아요.
         </TermsText>
         <TermsText>
-          참여자는 해당 약관에 대해서 거부할 수 있지만 거부 시에 해당 서비스를
-          이용할 수 없어요.
+          해당 약관에 대해서 거부할 수 있지만 거부 시에 해당 서비스를 이용할 수
+          없어요.
         </TermsText>
       </TermsContainer>
       <BottomContainer>
         <Button
           onClick={() => {
+            document.cookie = "terms=true; secure; samesite";
             nextURLPush(router, "/select_image");
           }}
           bg={"rgb(49, 130, 246)"}
@@ -87,7 +88,7 @@ const BottomContainer = styled.div`
   flex-direction: column;
   align-items: center;
   height: 140px;
-  padding-top: 20px;
+  /* padding-top: 20px; */
   gap: 12px;
 `;
 

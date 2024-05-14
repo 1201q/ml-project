@@ -104,7 +104,7 @@ const ModalContainer = styled(motion.div)`
   position: absolute;
   bottom: 13px;
   width: calc(100% - 26px);
-  height: 550px;
+  height: 600px;
   background-color: white;
   z-index: 100;
   margin: 0px 13px;
@@ -123,7 +123,7 @@ const ButtonContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  height: 450px;
+  height: 500px;
   position: relative;
   margin: 20px 20px;
 
