@@ -5,12 +5,15 @@ import { useEffect, useState } from "react";
 
 import SelectModeModal from "./SelectModeModal";
 import { useSetAtom } from "jotai";
-import { imgSrcAtom } from "@/context/atoms";
+import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 
 const SelectImagePage = () => {
   const [isVisibleModal, setIsVisibleModal] = useState(true);
   const setImgSrcAtom = useSetAtom(imgSrcAtom);
+  const setImgSizeAtom = useSetAtom(imgSizeAtom);
+
   useEffect(() => {
+    setImgSizeAtom(null);
     setImgSrcAtom(null);
   }, []);
 

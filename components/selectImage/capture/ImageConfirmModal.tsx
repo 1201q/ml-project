@@ -1,7 +1,9 @@
+import { imgSizeAtom } from "@/context/atoms";
 import { motion } from "framer-motion";
+import { useSetAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import styled from "styled-components";
 
 const ImageConfirmModal = ({
@@ -11,7 +13,9 @@ const ImageConfirmModal = ({
   imgSrc: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const imageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
+  const setSize = useSetAtom(imgSizeAtom);
   const modalVariants = {
     initial: {
       opacity: 0,
@@ -38,6 +42,7 @@ const ImageConfirmModal = ({
       >
         <ImageContainer>
           <Image
+            ref={imageRef}
             src={imgSrc}
             alt="captureImage"
             fill={true}
@@ -60,7 +65,15 @@ const ImageConfirmModal = ({
           </Button>
           <Button
             onClick={() => {
-              router.push("/select_image/upload");
+              if (imageRef.current) {
+                const ref = imageRef.current;
+                setSize({
+                  width: ref.clientWidth,
+                  height: ref.clientHeight,
+                  aspectRatio: ref.clientWidth / ref.clientHeight,
+                });
+                router.push("/select_image/upload");
+              }
             }}
             bg={"rgb(49, 130, 246)"}
             font={"white"}
@@ -99,7 +112,7 @@ const ModalContainer = styled(motion.div)`
   overflow: hidden;
 
   @media screen and (max-width: 450px) {
-    height: 400px;
+    height: 430px;
   }
 `;
 

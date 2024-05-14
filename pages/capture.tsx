@@ -1,4 +1,3 @@
-import CurrentStage from "@/components/CurrentStage";
 import FaceCapture from "@/components/FaceCapture";
 
 import { useRouter } from "next/router";
@@ -29,9 +28,7 @@ function Capture() {
 
   return (
     <Container>
-      <CurrentStage />
       {isInit && isCameraVisible && <FaceCapture />}
-
       {isInit ? "설정완료" : "설정미"}
       <button
         onClick={() => {
@@ -40,7 +37,6 @@ function Capture() {
       >
         끄기
       </button>
-      {/* <Loading isLoading={false} /> */}
     </Container>
   );
 }

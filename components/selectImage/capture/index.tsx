@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useSize from "@/utils/useSize";
 import ImageConfirmModal from "./ImageConfirmModal";
 import { useAtom } from "jotai";
-import { imgSrcAtom } from "@/context/atoms";
+import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 
 const CaptureImagePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);

@@ -1,15 +1,16 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import Image from "next/image";
+import NextImage from "next/image";
 
 import { useRouter } from "next/router";
 import nextURLPush from "@/utils/nextURLPush";
 import { useAtom } from "jotai";
-import { imgSrcAtom } from "@/context/atoms";
+import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 
 const SelectModeModal = () => {
   const router = useRouter();
   const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
+  const [imgSize, setImgSize] = useAtom(imgSizeAtom);
 
   const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files !== null && e.target.files.length >= 1) {
@@ -17,12 +18,25 @@ const SelectModeModal = () => {
 
       let reader = new FileReader();
       reader.readAsDataURL(file);
+
       reader.onload = function (e) {
-        const img = e.target?.result;
-        if (typeof img === "string") {
-          setImgSrc(img);
-          nextURLPush(router, "/select_image/upload");
-        }
+        const image = new Image();
+        image.src = e.target?.result as string;
+
+        image.onload = function () {
+          const width = image.width;
+          const height = image.height;
+
+          if (image) {
+            setImgSrc(image.src);
+            setImgSize({
+              width: width,
+              height: height,
+              aspectRatio: width / height,
+            });
+            nextURLPush(router, "/select_image/upload");
+          }
+        };
       };
     }
   };
@@ -75,7 +89,7 @@ const SelectModeModal = () => {
             whileHover="hover"
             whileTap="tap"
           >
-            <Image
+            <NextImage
               src={require("@/public/Camera.png")}
               alt={"camera"}
               width={35}
@@ -100,7 +114,7 @@ const SelectModeModal = () => {
               accept="image/*"
               onChange={onUpload}
             />
-            <Image
+            <NextImage
               src={require("@/public/folder.png")}
               alt={"folder"}
               width={35}
