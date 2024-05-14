@@ -1,10 +1,11 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import useSize from "@/utils/useSize";
-
-import ImageViewerModal from "./ImageViewerModal";
+import ImageConfirmModal from "./ImageConfirmModal";
+import { useAtom } from "jotai";
+import { imgSrcAtom } from "@/context/atoms";
 
 const CaptureImagePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -12,8 +13,8 @@ const CaptureImagePage = () => {
 
   const { isResizing, init } = useSize(videoContainerRef);
   const [isReadyCamera, setIsReadyCamera] = useState(false);
-  const [imgSrc, setImgSrc] = useState<null | string>(null);
-  const [isImgViewerModalOpen, setIsImgViewerModalOpen] = useState(false);
+  const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
+  const [isImgConfirmModalOpen, setIsImgConfirmModalOpen] = useState(false);
 
   const onCapture = () => {
     const img = webcamRef.current?.getScreenshot();
@@ -24,7 +25,7 @@ const CaptureImagePage = () => {
 
   useEffect(() => {
     if (imgSrc) {
-      setIsImgViewerModalOpen(true);
+      setIsImgConfirmModalOpen(true);
     }
   }, [imgSrc]);
 
@@ -38,6 +39,7 @@ const CaptureImagePage = () => {
             videoConstraints={{
               facingMode: "user",
             }}
+            screenshotQuality={100}
             screenshotFormat="image/jpeg"
             onCanPlay={() => {
               setIsReadyCamera(true);
@@ -52,9 +54,14 @@ const CaptureImagePage = () => {
           </CaptureBtnContainer>
         )}
       </ControllerContainer>
-      {isImgViewerModalOpen && imgSrc && (
-        <ImageViewerModal setIsOpen={setIsImgViewerModalOpen} imgSrc={imgSrc} />
-      )}
+      <AnimatePresence>
+        {isImgConfirmModalOpen && imgSrc && (
+          <ImageConfirmModal
+            setIsOpen={setIsImgConfirmModalOpen}
+            imgSrc={imgSrc}
+          />
+        )}
+      </AnimatePresence>
     </Container>
   );
 };
@@ -88,8 +95,8 @@ const ControllerContainer = styled.div`
 `;
 
 const CaptureButton = styled(motion.button)`
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   background-color: white;
   border-radius: 50%;
 `;
@@ -98,8 +105,8 @@ const CaptureBtnContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   background-color: gray;
   border-radius: 50%;
 `;

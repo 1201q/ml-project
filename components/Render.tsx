@@ -3,8 +3,9 @@ import styled from "styled-components";
 import LandingPage from "./landing/index";
 import StartPage from "./terms/index";
 import CameraPage from "./selectImage/mode/index";
-import ImportImagePage from "./selectImage/import";
+
 import CaptureImagePage from "./selectImage/capture";
+import UploadPage from "./selectImage/upload";
 
 const Render = () => {
   const router = useRouter();
@@ -17,7 +18,8 @@ const Render = () => {
         {path === "/terms" && <StartPage />}
         {path === "/select_image" && <CameraPage />}
         {path === "/select_image/capture" && <CaptureImagePage />}
-        {path === "/select_image/import" && <ImportImagePage />}
+
+        {path === "/select_image/upload" && <UploadPage />}
       </MobileContainer>
     </Container>
   );

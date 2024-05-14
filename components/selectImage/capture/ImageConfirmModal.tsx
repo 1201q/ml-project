@@ -1,15 +1,17 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
-const ImageViewerModal = ({
+const ImageConfirmModal = ({
   imgSrc,
   setIsOpen,
 }: {
   imgSrc: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const router = useRouter();
   const modalVariants = {
     initial: {
       opacity: 0,
@@ -45,7 +47,6 @@ const ImageViewerModal = ({
             }}
           />
         </ImageContainer>
-
         <ButtonContainer>
           <Button
             onClick={() => {
@@ -58,9 +59,13 @@ const ImageViewerModal = ({
             다시 찍을게요
           </Button>
           <Button
+            onClick={() => {
+              router.push("/select_image/upload");
+            }}
             bg={"rgb(49, 130, 246)"}
             font={"white"}
             whileTap={{ scale: 0.97 }}
+            whileHover={{ filter: "brightness(0.8)" }}
           >
             업로드
           </Button>
@@ -75,7 +80,7 @@ const Container = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 200;
 `;
 
@@ -84,14 +89,18 @@ const ModalContainer = styled(motion.div)`
   flex-direction: column;
   justify-content: space-between;
   position: absolute;
-  bottom: 20px;
-  width: calc(100% - 40px);
-  height: 400px;
+  bottom: 13px;
+  width: calc(100% - 26px);
+  height: 550px;
   background-color: white;
   z-index: 100;
-  margin: 0px 20px;
+  margin: 0px 13px;
   border-radius: 25px;
   overflow: hidden;
+
+  @media screen and (max-width: 450px) {
+    height: 400px;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -101,10 +110,13 @@ const ButtonContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  height: 320px;
+  height: 450px;
   position: relative;
   margin: 20px 20px;
-  border-radius: 20px;
+
+  @media screen and (max-width: 450px) {
+    height: 320px;
+  }
 `;
 
 const Button = styled(motion.button)<{ bg: string; font: string }>`
@@ -118,4 +130,4 @@ const Button = styled(motion.button)<{ bg: string; font: string }>`
   -webkit-tap-highlight-color: transparent;
 `;
 
-export default ImageViewerModal;
+export default ImageConfirmModal;

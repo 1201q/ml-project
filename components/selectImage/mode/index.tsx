@@ -1,12 +1,18 @@
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
 import Header from "../../Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import SelectModeModal from "./SelectModeModal";
+import { useSetAtom } from "jotai";
+import { imgSrcAtom } from "@/context/atoms";
 
 const SelectImagePage = () => {
   const [isVisibleModal, setIsVisibleModal] = useState(true);
+  const setImgSrcAtom = useSetAtom(imgSrcAtom);
+  useEffect(() => {
+    setImgSrcAtom(null);
+  }, []);
 
   return (
     <Container>

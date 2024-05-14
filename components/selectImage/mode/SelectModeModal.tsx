@@ -4,9 +4,29 @@ import Image from "next/image";
 
 import { useRouter } from "next/router";
 import nextURLPush from "@/utils/nextURLPush";
+import { useAtom } from "jotai";
+import { imgSrcAtom } from "@/context/atoms";
 
 const SelectModeModal = () => {
   const router = useRouter();
+  const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
+
+  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files !== null && e.target.files.length >= 1) {
+      const file = e.target.files[0];
+
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function (e) {
+        const img = e.target?.result;
+        if (typeof img === "string") {
+          setImgSrc(img);
+          nextURLPush(router, "/select_image/upload");
+        }
+      };
+    }
+  };
+
   const modalVariants = {
     initial: {
       opacity: 0,
@@ -68,14 +88,18 @@ const SelectModeModal = () => {
             />
             이미지 촬영하기
           </ModalMenu>
-          <ModalMenu
-            onClick={() => {
-              nextURLPush(router, "/select_image/import");
-            }}
+          <LabelMenu
+            htmlFor="file"
             variants={menuVariants}
             whileHover="hover"
             whileTap="tap"
           >
+            <FileInput
+              id="file"
+              type="file"
+              accept="image/*"
+              onChange={onUpload}
+            />
             <Image
               src={require("@/public/folder.png")}
               alt={"folder"}
@@ -84,7 +108,7 @@ const SelectModeModal = () => {
               style={{ marginLeft: "-4px", marginRight: "7px" }}
             />
             저장소에서 이미지 가져오기
-          </ModalMenu>
+          </LabelMenu>
         </ModalMenuContainer>
       </ModalContainer>
     </Container>
@@ -134,6 +158,23 @@ const ModalMenu = styled(motion.div)`
   font-weight: 500;
   background-color: white;
   -webkit-tap-highlight-color: transparent;
+`;
+
+const LabelMenu = styled(motion.label)`
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 7px 13px;
+  margin-bottom: 5px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  background-color: white;
+  -webkit-tap-highlight-color: transparent;
+`;
+const FileInput = styled.input`
+  display: none;
 `;
 
 export default SelectModeModal;
