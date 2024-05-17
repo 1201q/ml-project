@@ -3,18 +3,75 @@ import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 import { motion } from "framer-motion";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import * as faceapi from "face-api.js";
 
 const UploadPage = () => {
   const imgSrc = useAtomValue(imgSrcAtom);
   const imgSize = useAtomValue(imgSizeAtom);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const recogBoxRef = useRef<HTMLCanvasElement>(null);
+
+  const [isInit, setIsInit] = useState(false);
+
+  const init = async () => {
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/models"),
+      faceapi.nets.ageGenderNet.loadFromUri("/models"),
+    ]);
+    setIsInit(true);
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (isInit) {
+      detect();
+    }
+  }, [isInit]);
+
+  const detect = async () => {
+    const ref = imgRef.current;
+    const canvasRef = recogBoxRef.current;
+
+    if (ref && canvasRef && imgSize) {
+      const displaySize = {
+        width: ref.clientWidth,
+        height: ref.clientHeight,
+      };
+
+      faceapi.matchDimensions(canvasRef, displaySize);
+
+      const detections = await faceapi
+        .detectAllFaces(
+          ref as faceapi.TNetInput,
+          new faceapi.TinyFaceDetectorOptions()
+        )
+        .withFaceLandmarks();
+
+      const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+      const context = canvasRef.getContext("2d");
+      if (context) {
+        context.clearRect(0, 0, canvasRef.width, canvasRef.height);
+        faceapi.draw.drawDetections(canvasRef, resizedDetections);
+      }
+    }
+  };
 
   return (
     <Container>
       <Header currentMenu="이미지 업로드" />
-      {imgSrc && imgSize && (
+      {isInit && imgSrc && imgSize && (
         <ImageContainer width={imgSize?.width} height={imgSize?.height}>
           <Image
+            ref={imgRef}
             src={imgSrc}
             alt="captureImage"
             fill
@@ -23,8 +80,13 @@ const UploadPage = () => {
               borderRadius: "15px",
             }}
           />
+          <canvas
+            ref={recogBoxRef}
+            style={{ position: "absolute", top: 0, left: 0, zIndex: 10000 }}
+          />
         </ImageContainer>
       )}
+      {isInit ? "로딩완료" : "로딩중"}
     </Container>
   );
 };
@@ -38,9 +100,13 @@ const Container = styled(motion.div)`
 const ImageContainer = styled.div<{ width: number; height: number }>`
   aspect-ratio: ${(props) => props.width / props.height};
   width: calc(100% - 40px);
-  max-height: calc(100% - 60px);
+  max-height: calc(100% - 80px);
   margin: 20px 20px;
   position: relative;
+
+  @media screen and (max-width: 450px) {
+    max-height: calc(100% - 200px);
+  }
 `;
 
 export default UploadPage;
