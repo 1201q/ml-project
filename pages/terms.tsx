@@ -2,9 +2,10 @@ import Render from "@/components/Render";
 import React from "react";
 import { GetServerSideProps, GetServerSidePropsContext, Redirect } from "next";
 import { getIsCorrectCookie } from "@/utils/cookies";
+import TermsPage from "@/components/terms";
 
 function Terms() {
-  return <Render />;
+  return <Render render={TermsPage} />;
 }
 
 export const getServerSideProps: GetServerSideProps = async (
@@ -14,7 +15,9 @@ export const getServerSideProps: GetServerSideProps = async (
   const isAgreeTerms = getIsCorrectCookie(cookies, "terms", "true");
 
   if (isAgreeTerms) {
-    return { redirect: { destination: "/select_image", permanent: false } };
+    return {
+      redirect: { destination: "/select_image/capture", permanent: false },
+    };
   }
 
   return {

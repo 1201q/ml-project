@@ -3,11 +3,16 @@ import Webcam from "react-webcam";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import useSize from "@/utils/useSize";
-import ImageConfirmModal from "./ImageConfirmModal";
-import { useAtom } from "jotai";
-import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
+import ImageConfirmModal from "../modal/ImageConfirmModal";
+import { useAtom, useAtomValue } from "jotai";
+import {
+  imgSizeAtom,
+  imgSrcAtom,
+  isModelDownloadedAtom,
+} from "@/context/atoms";
+import LoadingPage from "../loading";
 
-const CaptureImagePage = () => {
+const CapturePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const webcamRef = useRef<Webcam>(null);
 
@@ -33,18 +38,26 @@ const CaptureImagePage = () => {
     <Container>
       <CameraContainer ref={videoContainerRef}>
         {!isResizing && init && (
-          <Webcam
-            ref={webcamRef}
-            mirrored={true}
-            videoConstraints={{
-              facingMode: "user",
-            }}
-            screenshotQuality={100}
-            screenshotFormat="image/jpeg"
-            onCanPlay={() => {
-              setIsReadyCamera(true);
-            }}
-          />
+          <>
+            <Webcam
+              ref={webcamRef}
+              mirrored={true}
+              videoConstraints={{
+                facingMode: "user",
+              }}
+              screenshotQuality={100}
+              screenshotFormat="image/jpeg"
+              onCanPlay={() => {
+                setIsReadyCamera(true);
+              }}
+            />
+            <StorageBtn
+              whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
+              whileHover={{ backgroundColor: "#8080807e" }}
+            >
+              기존 이미지를 가져올게요
+            </StorageBtn>
+          </>
         )}
       </CameraContainer>
       <ControllerContainer>
@@ -91,7 +104,6 @@ const ControllerContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
 `;
 
 const CaptureButton = styled(motion.button)`
@@ -109,6 +121,17 @@ const CaptureBtnContainer = styled.div`
   height: 60px;
   background-color: gray;
   border-radius: 50%;
+  margin-top: 10px;
 `;
 
-export default CaptureImagePage;
+const StorageBtn = styled(motion.button)`
+  position: absolute;
+  bottom: -45px;
+  font-size: 15px;
+  color: #808080;
+  z-index: 100;
+  padding: 5px 10px;
+  border-radius: 7px;
+`;
+
+export default CapturePage;
