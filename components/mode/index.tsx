@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "styled-components";
-import Header from "../../Header";
+import Header from "../Header";
 import { useEffect, useState } from "react";
 
-import SelectModeModal from "./SelectModeModal";
+import SelectModeModal from "../modal/SelectModeModal";
 import { useSetAtom } from "jotai";
 import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 

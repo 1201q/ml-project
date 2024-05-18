@@ -5,6 +5,12 @@ import styled from "styled-components";
 
 const Terms = () => {
   const router = useRouter();
+
+  const agree = () => {
+    document.cookie = "terms=true; secure; samesite";
+    nextURLPush(router, "/select_image/capture");
+  };
+
   return (
     <Container>
       <TitleContainer>
@@ -27,10 +33,7 @@ const Terms = () => {
       </TermsContainer>
       <BottomContainer>
         <Button
-          onClick={() => {
-            document.cookie = "terms=true; secure; samesite";
-            nextURLPush(router, "/select_image");
-          }}
+          onClick={agree}
           bg={"rgb(49, 130, 246)"}
           font={"white"}
           whileHover={{ filter: "brightness(0.8)" }}

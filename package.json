@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@tensorflow/tfjs-node": "^4.19.0",
     "@types/firebase": "^3.2.1",
-    "@types/nookies": "^2.0.3",
     "babel-plugin-styled-components": "^2.1.4",
     "canvas": "^2.11.2",
     "face-api.js": "^0.22.2",
@@ -20,8 +20,10 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-spinners": "^0.13.8",
     "react-webcam": "^7.2.0",
-    "styled-components": "^5.3.10"
+    "styled-components": "^5.3.10",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@types/node": "^20",

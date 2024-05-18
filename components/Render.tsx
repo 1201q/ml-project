@@ -1,25 +1,15 @@
-import { useRouter } from "next/router";
 import styled from "styled-components";
-import LandingPage from "./landing/index";
-import StartPage from "./terms/index";
-import CameraPage from "./selectImage/mode/index";
 
-import CaptureImagePage from "./selectImage/capture";
-import UploadPage from "./selectImage/upload";
+type RenderProps = {
+  render: React.FC<any>;
+  [key: string]: any;
+};
 
-const Render = () => {
-  const router = useRouter();
-  const path = router.pathname;
-
+const Render = ({ render: Render, ...props }: RenderProps) => {
   return (
     <Container>
       <MobileContainer>
-        {path === "/" && <LandingPage />}
-        {path === "/terms" && <StartPage />}
-        {path === "/select_image" && <CameraPage />}
-        {path === "/select_image/capture" && <CaptureImagePage />}
-
-        {path === "/select_image/upload" && <UploadPage />}
+        <Render {...props} />
       </MobileContainer>
     </Container>
   );

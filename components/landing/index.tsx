@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 const LandingPage = () => {
   const router = useRouter();
+
   return (
     <Container>
       <TopContainer>
