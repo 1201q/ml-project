@@ -5,18 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import useSize from "@/utils/useSize";
 import ImageConfirmModal from "../modal/ImageConfirmModal";
 import { useAtom, useAtomValue } from "jotai";
-import {
-  imgSizeAtom,
-  imgSrcAtom,
-  isModelDownloadedAtom,
-} from "@/context/atoms";
-import LoadingPage from "../loading";
+import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
+import Video from "./Video";
 
 const CapturePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const webcamRef = useRef<Webcam>(null);
 
-  const { isResizing, init } = useSize(videoContainerRef);
+  const { isResizing } = useSize(videoContainerRef);
   const [isReadyCamera, setIsReadyCamera] = useState(false);
   const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
   const [isImgConfirmModalOpen, setIsImgConfirmModalOpen] = useState(false);
@@ -37,20 +33,9 @@ const CapturePage = () => {
   return (
     <Container>
       <CameraContainer ref={videoContainerRef}>
-        {!isResizing && init && (
+        {isResizing && (
           <>
-            <Webcam
-              ref={webcamRef}
-              mirrored={true}
-              videoConstraints={{
-                facingMode: "user",
-              }}
-              screenshotQuality={100}
-              screenshotFormat="image/jpeg"
-              onCanPlay={() => {
-                setIsReadyCamera(true);
-              }}
-            />
+            <Video setIsReadyCamera={setIsReadyCamera} webcamRef={webcamRef} />
             <StorageBtn
               whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
               whileHover={{ backgroundColor: "#8080807e" }}

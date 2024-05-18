@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, RefObject } from "react";
-import { SizeType } from "@/types/types";
 
 const useSize = (ref: RefObject<HTMLDivElement>) => {
-  const [size, setSize] = useState<SizeType | null>(null);
   const [isResizing, setIsResizing] = useState(false);
   const [init, setInit] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | undefined>();
@@ -14,11 +12,6 @@ const useSize = (ref: RefObject<HTMLDivElement>) => {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
         if (ref.current) {
-          setSize({
-            width: ref.current.offsetWidth,
-            height: ref.current.offsetHeight,
-            aspectRatio: ref.current.offsetWidth / ref.current.offsetHeight,
-          });
           setIsResizing(false);
         }
       }, 300);
@@ -35,7 +28,7 @@ const useSize = (ref: RefObject<HTMLDivElement>) => {
     };
   }, []);
 
-  return { size, isResizing, init };
+  return { isResizing: !isResizing && init };
 };
 
 export default useSize;

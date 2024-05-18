@@ -13,26 +13,9 @@ const UploadPage = () => {
   const imgRef = useRef<HTMLImageElement>(null);
   const recogBoxRef = useRef<HTMLCanvasElement>(null);
 
-  const [isInit, setIsInit] = useState(false);
-
-  const init = async () => {
-    await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-    ]);
-    setIsInit(true);
-  };
-
   useEffect(() => {
-    init();
+    detect();
   }, []);
-
-  useEffect(() => {
-    if (isInit) {
-      detect();
-    }
-  }, [isInit]);
 
   const detect = async () => {
     const ref = imgRef.current;
@@ -66,7 +49,7 @@ const UploadPage = () => {
   return (
     <Container>
       <Header currentMenu="이미지 업로드" />
-      {isInit && imgSrc && imgSize && (
+      {imgSrc && imgSize && (
         <ImageContainer width={imgSize?.width} height={imgSize?.height}>
           <Image
             ref={imgRef}
@@ -84,7 +67,6 @@ const UploadPage = () => {
           />
         </ImageContainer>
       )}
-      {isInit ? "로딩완료" : "로딩중"}
     </Container>
   );
 };
