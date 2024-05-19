@@ -29,10 +29,7 @@ const UploadPage = () => {
 
       faceapi.matchDimensions(canvasRef, displaySize);
 
-      const detections = await faceapi.detectAllFaces(
-        ref as faceapi.TNetInput,
-        new faceapi.TinyFaceDetectorOptions()
-      );
+      const detections = await faceapi.detectAllFaces(ref as faceapi.TNetInput);
 
       const resizedDetections = faceapi.resizeResults(detections, displaySize);
 

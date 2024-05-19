@@ -31,8 +31,7 @@ const WebcamComponent: React.FC<VideoPropsType> = ({
     const cameraRef = webcamRef.current?.video;
 
     const detectionPromise: any = faceapi.detectSingleFace(
-      cameraRef as faceapi.TNetInput,
-      new faceapi.TinyFaceDetectorOptions()
+      cameraRef as faceapi.TNetInput
     );
 
     if (cameraRef) {

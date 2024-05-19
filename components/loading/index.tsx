@@ -29,6 +29,7 @@ const LoadingContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-right: 2px;
 `;
 
 const Text = styled.p`

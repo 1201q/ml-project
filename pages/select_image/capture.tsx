@@ -14,9 +14,10 @@ function Home() {
   const init = async () => {
     console.log("실행");
     await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+      // faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+      // faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      // faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
     ])
       .then(() => {
         console.log("로드완료");
@@ -37,7 +38,7 @@ function Home() {
       {isModelDownloaded ? (
         <Render render={CapturePage} />
       ) : (
-        <Render render={LoadingPage} text="모델을 다운로드 중이에요" />
+        <Render render={LoadingPage} text="모델을 불러오고 있어요" />
       )}
     </>
   );
