@@ -4,18 +4,19 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import useSize from "@/utils/useSize";
 import ImageConfirmModal from "../modal/ImageConfirmModal";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
-import Video from "./Video";
+import WebcamComponent from "./Webcam";
 
 const CapturePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const webcamRef = useRef<Webcam>(null);
 
-  const { isResizing } = useSize(videoContainerRef);
   const [isReadyCamera, setIsReadyCamera] = useState(false);
   const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
   const [isImgConfirmModalOpen, setIsImgConfirmModalOpen] = useState(false);
+
+  const [imgSize, setImgSize] = useAtom(imgSizeAtom);
 
   const onCapture = () => {
     const img = webcamRef.current?.getScreenshot();
@@ -30,20 +31,25 @@ const CapturePage = () => {
     }
   }, [imgSrc]);
 
+  useEffect(() => {
+    setImgSrc(null);
+    setImgSize(null);
+  }, []);
+
   return (
     <Container>
       <CameraContainer ref={videoContainerRef}>
-        {isResizing && (
-          <>
-            <Video setIsReadyCamera={setIsReadyCamera} webcamRef={webcamRef} />
-            <StorageBtn
-              whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
-              whileHover={{ backgroundColor: "#8080807e" }}
-            >
-              기존 이미지를 가져올게요
-            </StorageBtn>
-          </>
-        )}
+        <WebcamComponent
+          setIsReadyCamera={setIsReadyCamera}
+          webcamRef={webcamRef}
+        />
+
+        <StorageBtn
+          whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
+          whileHover={{ backgroundColor: "#8080807e" }}
+        >
+          기존 이미지를 가져올게요
+        </StorageBtn>
       </CameraContainer>
       <ControllerContainer>
         {isReadyCamera && (
