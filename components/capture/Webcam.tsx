@@ -10,36 +10,45 @@ import Error from "next/error";
 interface VideoPropsType {
   setIsReadyCamera: SetState<boolean>;
   webcamRef: RefObject<Webcam>;
+  isStop: boolean;
 }
 
 const WebcamComponent: React.FC<VideoPropsType> = ({
   setIsReadyCamera,
   webcamRef,
+  isStop,
 }) => {
   const [score, setScore] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout>();
+  const viewFinderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    intervalRef.current = setInterval(detectFace, 100);
+    if (!isStop) {
+      intervalRef.current = setInterval(detectFace, 150);
+    } else {
+      clearInterval(intervalRef.current);
+    }
 
     return () => {
-      clearInterval(intervalRef.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-  }, []);
+  }, [isStop]);
 
   const detectFace = () => {
     const cameraRef = webcamRef.current?.video;
 
-    const detectionPromise: any = faceapi.detectSingleFace(
-      cameraRef as faceapi.TNetInput
-    );
-
     if (cameraRef) {
+      const detectionPromise: any = faceapi.detectSingleFace(
+        cameraRef as faceapi.TNetInput,
+        new faceapi.TinyFaceDetectorOptions()
+      );
+
       detectionPromise
         .then((detections: faceapi.FaceDetection) => {
           if (detections) {
             const box = detections?.box;
-
             if (
               box &&
               box.x !== null &&
@@ -69,14 +78,21 @@ const WebcamComponent: React.FC<VideoPropsType> = ({
         }}
         screenshotQuality={100}
         screenshotFormat="image/jpeg"
-        onCanPlay={() => setIsReadyCamera(true)}
+        onCanPlay={() => {
+          setIsReadyCamera(true);
+        }}
       />
-      <ViewFinder>
+      <ViewFinder ref={viewFinderRef}>
         <ViewfinderIcon />
       </ViewFinder>
-      <p style={{ position: "absolute", top: 0, color: "white" }}>
-        {score ? `${score.toFixed()}%` : "없음"}
-      </p>
+
+      <TopContainer>
+        <Percent>
+          {score
+            ? `얼굴일 확률 ${score.toFixed()}%`
+            : "얼굴을 인식할 수 없어요"}
+        </Percent>
+      </TopContainer>
     </>
   );
 };
@@ -93,10 +109,37 @@ const ViewFinder = styled.div`
   svg {
     width: 70%;
     height: 70%;
-    fill: #808080;
+    fill: #ffffff4e;
     z-index: 100;
     margin-bottom: 50px;
   }
+`;
+
+const TopContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 55px;
+  background-color: black;
+`;
+
+const Percent = styled.div`
+  position: absolute;
+  top: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 10px;
+  max-width: 140px;
+  height: 25px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 400;
+  color: white;
 `;
 
 export default WebcamComponent;

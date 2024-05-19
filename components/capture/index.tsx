@@ -42,6 +42,7 @@ const CapturePage = () => {
         <WebcamComponent
           setIsReadyCamera={setIsReadyCamera}
           webcamRef={webcamRef}
+          isStop={isImgConfirmModalOpen}
         />
 
         <StorageBtn
