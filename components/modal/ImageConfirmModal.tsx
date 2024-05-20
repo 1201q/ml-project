@@ -1,21 +1,20 @@
-import { imgSizeAtom } from "@/context/atoms";
+import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 import { motion } from "framer-motion";
-import { useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const ImageConfirmModal = ({
-  imgSrc,
   setIsOpen,
 }: {
-  imgSrc: string;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const imageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const setSize = useSetAtom(imgSizeAtom);
+  const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
   const modalVariants = {
     initial: {
       opacity: 0,
@@ -40,18 +39,21 @@ const ImageConfirmModal = ({
         initial="initial"
         exit="exit"
       >
-        <ImageContainer>
-          <Image
-            ref={imageRef}
-            src={imgSrc}
-            alt="captureImage"
-            fill={true}
-            style={{
-              objectFit: "cover",
-              borderRadius: "15px",
-            }}
-          />
-        </ImageContainer>
+        {typeof imgSrc === "string" && (
+          <ImageContainer>
+            <Image
+              ref={imageRef}
+              src={imgSrc}
+              alt="captureImage"
+              fill={true}
+              style={{
+                objectFit: "cover",
+                borderRadius: "15px",
+              }}
+            />
+          </ImageContainer>
+        )}
+
         <ButtonContainer>
           <Button
             onClick={() => {
@@ -71,6 +73,7 @@ const ImageConfirmModal = ({
                   width: ref.clientWidth,
                   height: ref.clientHeight,
                 });
+                console.log(ref.clientWidth, ref.clientHeight);
                 router.push("/select_image/upload");
               }
             }}

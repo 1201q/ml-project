@@ -1,39 +1,37 @@
 import useSize from "@/utils/useSize";
-import { useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
 
-const CameraComponent = ({ isStop = false }) => {
+interface CameraPropsType {
+  webcamRef: RefObject<Webcam>;
+  setScore: Dispatch<SetStateAction<number>>;
+  isStop: boolean;
+}
+
+const CameraComponent: React.FC<CameraPropsType> = ({
+  isStop,
+  setScore,
+  webcamRef,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const webcamRef = useRef<Webcam>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const intervalRef = useRef<NodeJS.Timeout>();
   const { isResizing, size } = useSize(containerRef);
-  const [isPlayPossible, setIsPlayPossible] = useState(false);
-  const [score, setScore] = useState(0);
-  const [isInit, setIsInit] = useState(false);
 
   const cameraSize = {
     width: webcamRef.current?.video?.clientWidth,
     height: webcamRef.current?.video?.clientHeight,
   };
-
-  const init = async () => {
-    await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      // faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
-      // faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-      // faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-      // faceapi.nets.faceExpressionNet.loadFromUri("/models"),
-      // faceapi.nets.ageGenderNet.loadFromUri("/models"),
-    ]);
-    setIsInit(true);
-  };
-
-  useEffect(() => {
-    init();
-  }, []);
 
   const detectFace = () => {
     const cameraRef = webcamRef.current?.video;
@@ -90,7 +88,7 @@ const CameraComponent = ({ isStop = false }) => {
   };
 
   useEffect(() => {
-    if (!isStop && isInit) {
+    if (!isStop) {
       intervalRef.current = setInterval(detectFace, 100);
     } else {
       clearInterval(intervalRef.current);
@@ -101,11 +99,11 @@ const CameraComponent = ({ isStop = false }) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isStop, isInit]);
+  }, [isStop]);
 
   return (
     <Container ref={containerRef}>
-      <BarContainer type={"top"}>{score}</BarContainer>
+      <BarContainer type={"top"}></BarContainer>
       {!isResizing && size && (
         <>
           <Webcam
@@ -115,11 +113,12 @@ const CameraComponent = ({ isStop = false }) => {
               zIndex: 1,
               overflow: "hidden",
             }}
+            screenshotQuality={100}
+            screenshotFormat="image/jpeg"
             mirrored={true}
             videoConstraints={{
               facingMode: "user",
             }}
-            onCanPlay={() => setIsPlayPossible(true)}
           />
           <Detector
             ref={canvasRef}
@@ -128,9 +127,7 @@ const CameraComponent = ({ isStop = false }) => {
           />
         </>
       )}
-      <BarContainer type={"bottom"}>
-        width:{size?.width} / height:{size?.height}
-      </BarContainer>
+      <BarContainer type={"bottom"}></BarContainer>
     </Container>
   );
 };
@@ -141,7 +138,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   height: calc(100% - 180px);
-  background-color: green;
+  background-color: black;
   overflow: hidden;
   position: relative;
 `;

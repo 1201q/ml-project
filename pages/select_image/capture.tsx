@@ -1,5 +1,5 @@
 import Render from "@/components/Render";
-import CapturePage from "@/components/capture";
+import CapturePage from "@/components/capture/index";
 import { isModelDownloadedAtom } from "@/context/atoms";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
@@ -12,13 +12,7 @@ function Home() {
     isModelDownloadedAtom
   );
   const init = async () => {
-    console.log("실행");
-    await Promise.all([
-      // faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
-      // faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-      // faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-    ])
+    await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri("/models")])
       .then(() => {
         console.log("로드완료");
         setIsModelDownloaded(true);
