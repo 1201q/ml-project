@@ -7,6 +7,7 @@ import ImageConfirmModal from "../modal/ImageConfirmModal";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
 import WebcamComponent from "./Webcam";
+import CameraComponent from "./Camera";
 
 const CapturePage = () => {
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -39,12 +40,12 @@ const CapturePage = () => {
   return (
     <Container>
       <CameraContainer ref={videoContainerRef}>
-        <WebcamComponent
+        {/* <WebcamComponent
           setIsReadyCamera={setIsReadyCamera}
           webcamRef={webcamRef}
           isStop={isImgConfirmModalOpen}
-        />
-
+        /> */}
+        <CameraComponent />
         <StorageBtn
           whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
           whileHover={{ backgroundColor: "#8080807e" }}

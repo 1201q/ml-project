@@ -9,7 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mediapipe/face_detection": "^0.4.1646425229",
     "@svgr/webpack": "^8.1.0",
+    "@tensorflow-models/blazeface": "^0.1.0",
+    "@tensorflow-models/face-detection": "^1.0.2",
+    "@tensorflow/tfjs-backend-webgl": "^4.19.0",
+    "@tensorflow/tfjs-core": "^4.19.0",
     "@tensorflow/tfjs-node": "^4.19.0",
     "@types/firebase": "^3.2.1",
     "babel-plugin-styled-components": "^2.1.4",
