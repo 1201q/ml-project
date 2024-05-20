@@ -32,7 +32,6 @@ const SelectModeModal = () => {
             setImgSize({
               width: width,
               height: height,
-              aspectRatio: width / height,
             });
             nextURLPush(router, "/select_image/upload");
           }

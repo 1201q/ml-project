@@ -70,7 +70,6 @@ const ImageConfirmModal = ({
                 setSize({
                   width: ref.clientWidth,
                   height: ref.clientHeight,
-                  aspectRatio: ref.clientWidth / ref.clientHeight,
                 });
                 router.push("/select_image/upload");
               }
