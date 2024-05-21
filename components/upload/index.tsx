@@ -48,14 +48,14 @@ const UploadPage = () => {
     <Container>
       <Header currentMenu="이미지 업로드" />
       {imgSrc && imgSize && (
-        <ImageContainer width={imgSize?.width} height={imgSize?.height}>
+        <ImageContainer>
           <Image
             ref={imgRef}
             src={imgSrc}
             alt="captureImage"
             fill
             style={{
-              objectFit: "cover",
+              objectFit: "none",
               borderRadius: "15px",
             }}
           />
@@ -75,10 +75,9 @@ const Container = styled(motion.div)`
   flex-direction: column;
 `;
 
-const ImageContainer = styled.div<{ width: number; height: number }>`
-  aspect-ratio: ${(props) => props.width / props.height};
+const ImageContainer = styled.div`
   width: calc(100% - 40px);
-  max-height: calc(100% - 80px);
+  height: calc(100% - 200px);
   margin: 20px 20px;
   position: relative;
 

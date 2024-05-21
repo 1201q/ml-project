@@ -33,7 +33,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
     height: webcamRef.current?.video?.clientHeight,
   };
 
-  const detectFace = () => {
+  const detectFace = async () => {
     const cameraRef = webcamRef.current?.video;
     const detecterRef = canvasRef.current;
 
@@ -49,7 +49,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
       };
 
       detectionPromise
-        .then((detections: faceapi.FaceDetection) => {
+        .then(async (detections: faceapi.FaceDetection) => {
           if (detections) {
             const box = detections?.box;
             if (
@@ -69,7 +69,10 @@ const CameraComponent: React.FC<CameraPropsType> = ({
 
               if (context) {
                 context.clearRect(0, 0, detecterRef.width, detecterRef.height);
-                const drawBox = new faceapi.draw.DrawBox(resizedDetections.box);
+                const drawBox = new faceapi.draw.DrawBox(
+                  resizedDetections.box,
+                  { lineWidth: 3 }
+                );
                 drawBox.draw(detecterRef);
               }
             }
@@ -89,7 +92,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
 
   useEffect(() => {
     if (!isStop) {
-      intervalRef.current = setInterval(detectFace, 100);
+      intervalRef.current = setInterval(detectFace, 150);
     } else {
       clearInterval(intervalRef.current);
     }
@@ -127,6 +130,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
           />
         </>
       )}
+
       <BarContainer type={"bottom"}></BarContainer>
     </Container>
   );
