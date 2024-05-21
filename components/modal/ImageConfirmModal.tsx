@@ -98,6 +98,8 @@ const ImageConfirmModal = ({
 
   useEffect(() => {
     if (displayImgSize) {
+      console.log(displayImgSize);
+      console.log(imgSize);
       detectFace();
     }
   }, [displayImgSize]);
@@ -123,21 +125,21 @@ const ImageConfirmModal = ({
               }}
               onLoad={() => {
                 if (imageRef.current) {
-                  const size = {
-                    width: imageRef.current.clientWidth,
-                    height: imageRef.current.clientHeight,
-                  };
-                  setDisplayImgSize(size);
+                  const renderImg = imageRef.current;
+
+                  setDisplayImgSize({
+                    width: renderImg.clientWidth,
+                    height: renderImg.clientHeight,
+                  });
                 }
               }}
             />
 
             {displayImgSize && (
-              <canvas
+              <Detector
                 ref={canvasRef}
                 width={displayImgSize.width}
                 height={displayImgSize.height}
-                style={{ position: "absolute" }}
               />
             )}
           </ImageContainer>
@@ -208,6 +210,9 @@ const ModalContainer = styled(motion.div)`
 `;
 
 const ButtonContainer = styled.div`
+  width: calc(100% - 40px);
+  position: absolute;
+  bottom: 0;
   margin: 0px 20px 20px 20px;
   display: flex;
   gap: 15px;
@@ -228,6 +233,10 @@ const Button = styled(motion.button)<{ bg: string; font: string }>`
   font-size: 17px;
   font-weight: 600;
   -webkit-tap-highlight-color: transparent;
+`;
+
+const Detector = styled.canvas`
+  position: absolute;
 `;
 
 export default ImageConfirmModal;
