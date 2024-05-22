@@ -36,6 +36,8 @@ const ImageConfirmModal = ({
   const [imgSize, setSize] = useAtom(imgSizeAtom);
   const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
   const [displayImgSize, setDisplayImgSize] = useState<SizeType | undefined>();
+  const [btnContainerVisible, setBtnContainerVisible] = useState(false);
+  const [isDetected, setIsDetected] = useState(false);
 
   const detectFace = async () => {
     const captureImageRef = imageRef.current;
@@ -77,17 +79,23 @@ const ImageConfirmModal = ({
                   { lineWidth: 3 }
                 );
                 drawBox.draw(detecterRef);
+                setIsDetected(true);
               }
             }
+            setBtnContainerVisible(true);
           } else {
             const context = detecterRef.getContext("2d");
             if (context) {
               context.clearRect(0, 0, detecterRef.width, detecterRef.height);
             }
+            setIsDetected(false);
+            setBtnContainerVisible(true);
           }
         })
         .catch((error: Error) => {
           console.error(error);
+          setBtnContainerVisible(true);
+          setIsDetected(false);
         });
     }
   };
@@ -119,10 +127,7 @@ const ImageConfirmModal = ({
               src={imgSrc}
               alt="captureImage"
               fill={true}
-              style={{
-                objectFit: "contain",
-                borderRadius: "15px",
-              }}
+              style={{ borderRadius: "15px" }}
               onLoad={() => {
                 if (imageRef.current) {
                   const renderImg = imageRef.current;
@@ -144,7 +149,6 @@ const ImageConfirmModal = ({
             )}
           </ImageContainer>
         )}
-
         <ButtonContainer>
           <Button
             onClick={() => {
@@ -197,7 +201,7 @@ const ModalContainer = styled(motion.div)`
   position: absolute;
   bottom: 13px;
   width: calc(100% - 26px);
-  max-height: 600px;
+
   background-color: white;
   z-index: 100;
   margin: 0px 13px;
@@ -205,23 +209,29 @@ const ModalContainer = styled(motion.div)`
   overflow: hidden;
 
   @media screen and (max-width: 450px) {
-    max-height: 430px;
+    max-height: calc(100dvh - 100px);
   }
 `;
 
 const ButtonContainer = styled.div`
   width: calc(100% - 40px);
-  position: absolute;
+
   bottom: 0;
   margin: 0px 20px 20px 20px;
   display: flex;
   gap: 15px;
+  background-color: white;
 `;
 
 const ImageContainer = styled.div<{ ratio: number }>`
   aspect-ratio: ${(props) => props.ratio};
   position: relative;
-  margin: 20px 20px;
+
+  margin: 20px 20px 20px 20px;
+
+  img {
+    aspect-ratio: ${(props) => props.ratio};
+  }
 `;
 
 const Button = styled(motion.button)<{ bg: string; font: string }>`

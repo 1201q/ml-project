@@ -1,31 +1,24 @@
 import useSize from "@/utils/useSize";
-import {
-  Dispatch,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, RefObject, SetStateAction, useRef } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
-import * as faceapi from "face-api.js";
+import useDetectWebcamFace from "./hooks/useDetectWebcamFace";
 
 interface CameraPropsType {
   webcamRef: RefObject<Webcam>;
   setScore: Dispatch<SetStateAction<number>>;
+  setIsTiltingFace: Dispatch<SetStateAction<boolean>>;
   isStop: boolean;
 }
 
 const CameraComponent: React.FC<CameraPropsType> = ({
   isStop,
   setScore,
+  setIsTiltingFace,
   webcamRef,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout>();
   const { isResizing, size } = useSize(containerRef);
 
   const cameraSize = {
@@ -33,76 +26,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
     height: webcamRef.current?.video?.clientHeight,
   };
 
-  const detectFace = async () => {
-    const cameraRef = webcamRef.current?.video;
-    const detecterRef = canvasRef.current;
-
-    if (cameraRef && detecterRef) {
-      const detectionPromise: any = faceapi.detectSingleFace(
-        cameraRef as faceapi.TNetInput,
-        new faceapi.TinyFaceDetectorOptions()
-      );
-
-      const displaySize = {
-        width: cameraRef.clientWidth,
-        height: cameraRef.clientHeight,
-      };
-
-      detectionPromise
-        .then(async (detections: faceapi.FaceDetection) => {
-          if (detections) {
-            const box = detections?.box;
-            if (
-              box &&
-              box.x !== null &&
-              box.y !== null &&
-              box.width !== null &&
-              box.height !== null
-            ) {
-              setScore(detections?.score * 100);
-
-              const resizedDetections = faceapi.resizeResults(
-                detections,
-                displaySize
-              );
-              const context = detecterRef.getContext("2d");
-
-              if (context) {
-                context.clearRect(0, 0, detecterRef.width, detecterRef.height);
-                const drawBox = new faceapi.draw.DrawBox(
-                  resizedDetections.box,
-                  { lineWidth: 3 }
-                );
-                drawBox.draw(detecterRef);
-              }
-            }
-          } else {
-            const context = detecterRef.getContext("2d");
-            if (context) {
-              context.clearRect(0, 0, detecterRef.width, detecterRef.height);
-            }
-            setScore(NaN);
-          }
-        })
-        .catch((error: Error) => {
-          console.error(error);
-        });
-    }
-  };
-
-  useEffect(() => {
-    if (!isStop) {
-      intervalRef.current = setInterval(detectFace, 150);
-    } else {
-      clearInterval(intervalRef.current);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isStop]);
+  useDetectWebcamFace(webcamRef, canvasRef, isStop, setScore, setIsTiltingFace);
 
   return (
     <Container ref={containerRef}>
@@ -160,7 +84,6 @@ const BarContainer = styled.div<{ type: "top" | "bottom" }>`
 
 const Detector = styled.canvas`
   position: absolute;
-
   left: 0;
   z-index: 2;
   transform: scaleX(-1);

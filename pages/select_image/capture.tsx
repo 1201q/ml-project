@@ -12,7 +12,11 @@ function Home() {
     isModelDownloadedAtom
   );
   const init = async () => {
-    await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri("/models")])
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.ageGenderNet.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
+    ])
       .then(() => {
         console.log("로드완료");
         setIsModelDownloaded(true);

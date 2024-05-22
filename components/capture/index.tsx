@@ -14,6 +14,7 @@ const CapturePage = () => {
   const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const [score, setScore] = useState<number>(NaN);
+  const [isTiltingFace, setIsTiltingFace] = useState(false);
   const [isImgConfirmModalOpen, setIsImgConfirmModalOpen] = useState(false);
   const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
   const [imgSize, setImgSize] = useAtom(imgSizeAtom);
@@ -73,13 +74,17 @@ const CapturePage = () => {
     setIsImgConfirmModalOpen(false);
   }, []);
 
-  const getIndicatorBg = (score: number): string => {
-    if (Number.isNaN(score)) {
+  const getIndicatorBg = (score: number, isTiltingFace: boolean): string => {
+    if (isTiltingFace) {
       return "rgba(240, 68, 82, 0.8)";
-    } else if (score < 80) {
-      return "rgba(49, 130, 246, 0.8)";
     } else {
-      return "rgba(49, 130, 246, 1)";
+      if (Number.isNaN(score)) {
+        return "rgba(240, 68, 82, 0.8)";
+      } else if (score < 80) {
+        return "rgba(49, 130, 246, 0.8)";
+      } else {
+        return "rgba(49, 130, 246, 1)";
+      }
     }
   };
 
@@ -88,6 +93,7 @@ const CapturePage = () => {
       <Camera
         webcamRef={webcamRef}
         setScore={setScore}
+        setIsTiltingFace={setIsTiltingFace}
         isStop={isImgConfirmModalOpen}
       />
       <ControllerContainer>
@@ -109,8 +115,12 @@ const CapturePage = () => {
           <CaptureButton onClick={onCapture} whileTap={{ scale: 0.9 }} />
         </CaptureBtnContainer>
       </ControllerContainer>
-      <PercentIndicator bg={getIndicatorBg(score)}>
-        {score ? `얼굴일 확률 ${score.toFixed()}%` : "얼굴을 인식할 수 없어요"}
+      <PercentIndicator bg={getIndicatorBg(score, isTiltingFace)}>
+        {isTiltingFace
+          ? "얼굴이 기울어졌어요"
+          : score
+          ? `얼굴일 확률 ${score.toFixed()}%`
+          : "얼굴을 인식할 수 없어요"}
       </PercentIndicator>
       <AnimatePresence>
         {isImgConfirmModalOpen && (

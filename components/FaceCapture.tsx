@@ -56,6 +56,7 @@ const FaceCapture = () => {
         if (context) {
           context.clearRect(0, 0, recogBox.width, recogBox.height);
           faceapi.draw.drawDetections(recogBox, resizedDetections);
+          faceapi.draw.drawFaceLandmarks(recogBox, resizedDetections);
         }
       }, 100);
 
