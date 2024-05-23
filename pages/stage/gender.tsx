@@ -1,8 +1,8 @@
 import Render from "@/components/Render";
-import GenderConfirmPage from "@/components/capture/GenderConfirm";
+import SelectGenderPage from "@/components/capture/SelectGender";
 
 const Gender = () => {
-  return <Render render={GenderConfirmPage} />;
+  return <Render render={SelectGenderPage} />;
 };
 
 export default Gender;

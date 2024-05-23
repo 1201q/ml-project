@@ -4,19 +4,22 @@ import Header from "../Header";
 import { useAtomValue } from "jotai";
 import { detectedFaceDataAtom, detectedFaceImageAtom } from "@/context/atoms";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import nextURLPush from "@/utils/nextURLPush";
 
-const GenderConfirmPage = () => {
+const SelectGenderPage = () => {
+  const router = useRouter();
   const face = useAtomValue(detectedFaceImageAtom);
-  const faceData = useAtomValue(detectedFaceDataAtom);
-
-  const percent = (faceData?.genderProbability * 100) as number;
-  const gender = faceData?.gender === "male" ? "남성" : "여성";
 
   return (
     <Container>
       <Header currentMenu="성별 선택" />
       <ContentsContainer>
-        <TitleContainer>
+        <TitleContainer
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
           <TitleText>남성이신가요?</TitleText>
           <TitleText>여성이신가요?</TitleText>
         </TitleContainer>
@@ -46,6 +49,9 @@ const GenderConfirmPage = () => {
           font={"white"}
           whileHover={{ filter: "brightness(0.8)" }}
           whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
+          onClick={() => {
+            nextURLPush(router, "/stage/post");
+          }}
         >
           남자에요
         </Button>
@@ -54,6 +60,9 @@ const GenderConfirmPage = () => {
           font={"white"}
           whileHover={{ filter: "brightness(0.8)" }}
           whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
+          onClick={() => {
+            nextURLPush(router, "/stage/post");
+          }}
         >
           여자에요
         </Button>
@@ -107,4 +116,4 @@ const Button = styled(motion.button)<{ bg: string; font: string }>`
   -webkit-tap-highlight-color: transparent;
 `;
 
-export default GenderConfirmPage;
+export default SelectGenderPage;
