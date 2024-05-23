@@ -24,7 +24,7 @@ const LandingPage = () => {
           whileHover={{ filter: "brightness(0.8)" }}
           whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
           onClick={() => {
-            router.push("/select_image/capture");
+            router.push("/stage/capture");
           }}
         >
           시작하기

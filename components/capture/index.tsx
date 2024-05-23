@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import styled from "styled-components";
 import CapturedImageModal from "../modal/CapturedImageModal";
 import { useAtom } from "jotai";
-import { capturedImageAtom } from "@/context/atoms";
+import { capturedImageAtom, detectedFaceDataAtom } from "@/context/atoms";
 import Webcam from "react-webcam";
 
 const CapturePage = () => {
@@ -29,18 +29,6 @@ const CapturePage = () => {
 
       setIsImgConfirmModalOpen(true);
     }
-
-    // const response = await fetch("/api/detect-face", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ image: imgSrc }),
-    // });
-
-    // const data = await response.json();
-
-    // console.log(data.image);
   };
 
   const getIndicatorBg = (score: number, isTiltingFace: boolean): string => {
@@ -144,11 +132,11 @@ const PercentIndicator = styled.div<{ bg: string }>`
   align-items: center;
   justify-content: center;
   padding: 0px 10px;
-  max-width: 140px;
+  max-width: 150px;
   height: 25px;
   background-color: ${(props) => props.bg};
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   color: white;
   z-index: 100;

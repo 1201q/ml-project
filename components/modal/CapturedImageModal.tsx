@@ -1,11 +1,18 @@
-import { capturedImageAtom } from "@/context/atoms";
+import {
+  capturedImageAtom,
+  detectedFaceDataAtom,
+  detectedFaceImageAtom,
+} from "@/context/atoms";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
+import { loadImage } from "canvas";
+import * as canvas from "canvas";
 import Image from "next/image";
-
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
+import nextURLPush from "@/utils/nextURLPush";
+import { useRouter } from "next/router";
 
 const modalVariants = {
   initial: {
@@ -31,10 +38,18 @@ const CapturedImageModal = ({
   const capturedImageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const router = useRouter();
+
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
+  const [detectedFaceImage, setDetectedFaceImage] = useAtom(
+    detectedFaceImageAtom
+  );
+
+  const [detectedFaceData, setDetectedFaceData] = useAtom(detectedFaceDataAtom);
   const [canvasSize, setCanvasSize] = useState<
     undefined | { width: number; height: number }
   >(undefined);
+  const [isFaceDetected, setIsFaceDetected] = useState(false);
 
   const detectFace = async () => {
     const img = capturedImageRef.current;
@@ -46,6 +61,7 @@ const CapturedImageModal = ({
           img as faceapi.TNetInput,
           new faceapi.TinyFaceDetectorOptions()
         )
+        .withFaceLandmarks(true)
         .withAgeAndGender();
 
       const displaySize = {
@@ -56,9 +72,8 @@ const CapturedImageModal = ({
       detectionPromise
         .then(async (detections: any) => {
           if (detections && detections.detection) {
-            console.log(detections);
             const box = detections?.detection.box;
-
+            getCroppedFace(box);
             if (
               box &&
               box.x !== null &&
@@ -80,6 +95,8 @@ const CapturedImageModal = ({
                   { lineWidth: 3 }
                 );
                 drawBox.draw(canvas);
+                setIsFaceDetected(true);
+                setDetectedFaceData(detections);
               }
             }
           } else {
@@ -87,11 +104,34 @@ const CapturedImageModal = ({
             if (context) {
               context.clearRect(0, 0, canvas.width, canvas.height);
             }
+            setIsFaceDetected(false);
           }
         })
         .catch((error: Error) => {
           console.error(error);
+          setIsFaceDetected(false);
         });
+    } else {
+      setIsFaceDetected(false);
+    }
+  };
+
+  const getCroppedFace = async (faceBox: faceapi.Box) => {
+    if (capturedImage?.src) {
+      const img = await loadImage(capturedImage?.src);
+      const { x, y, width, height } = faceBox;
+      const faceCanvas = canvas.createCanvas(width, height);
+      const ctx = faceCanvas.getContext("2d");
+      ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+      const croppedImage = faceCanvas.toDataURL();
+
+      if (croppedImage) {
+        setDetectedFaceImage({
+          src: croppedImage,
+          width: width,
+          height: height,
+        });
+      }
     }
   };
 
@@ -99,6 +139,7 @@ const CapturedImageModal = ({
     return () => {
       setCanvasSize(undefined);
       setCapturedImage(undefined);
+      setIsFaceDetected(false);
     };
   }, []);
 
@@ -144,24 +185,44 @@ const CapturedImageModal = ({
         )}
 
         <ButtonContainer>
-          <Button
-            onClick={() => {
-              setIsOpen(false);
-            }}
-            bg={"#f2f4f6"}
-            font={"gray"}
-            whileTap={{ scale: 0.97 }}
-          >
-            다시 찍을게요
-          </Button>
-          <Button
-            bg={"rgb(49, 130, 246)"}
-            font={"white"}
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ filter: "brightness(0.8)" }}
-          >
-            이 얼굴로 할게요
-          </Button>
+          {isFaceDetected ? (
+            <>
+              <Button
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+                bg={"#f2f4f6"}
+                font={"gray"}
+                whileTap={{ scale: 0.97 }}
+              >
+                다시 찍을게요
+              </Button>
+              <Button
+                onClick={() => {
+                  nextURLPush(router, "/stage/gender");
+                }}
+                bg={"rgb(49, 130, 246)"}
+                font={"white"}
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ filter: "brightness(0.8)" }}
+              >
+                이 얼굴로 할게요
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+                bg={"#f2f4f6"}
+                font={"gray"}
+                whileTap={{ scale: 0.97 }}
+              >
+                다시 찍어주세요
+              </Button>
+            </>
+          )}
         </ButtonContainer>
       </ModalContainer>
     </Container>
@@ -194,7 +255,6 @@ const ModalContainer = styled(motion.div)`
 
 const ButtonContainer = styled.div`
   width: calc(100% - 40px);
-
   bottom: 0;
   margin: 0px 20px 20px 20px;
   display: flex;
@@ -214,7 +274,7 @@ const ImageContainer = styled.div<{ ratio: number }>`
 `;
 
 const Button = styled(motion.button)<{ bg: string; font: string }>`
-  width: calc(100% - 40px);
+  width: 100%;
   height: 55px;
   border-radius: 15px;
   background-color: ${(props) => props.bg};

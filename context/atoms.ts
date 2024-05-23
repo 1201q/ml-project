@@ -9,3 +9,9 @@ export const isModelDownloadedAtom = atom(false);
 export const capturedImageAtom = atom<
   { src: string; width: number; height: number } | undefined
 >(undefined);
+
+export const detectedFaceImageAtom = atom<
+  { src: string; width: number; height: number } | undefined
+>(undefined);
+
+export const detectedFaceDataAtom = atom<any | undefined>(undefined);
