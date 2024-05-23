@@ -14,7 +14,7 @@ const useDetectWebcamFace = (
 
   useEffect(() => {
     if (!isStop) {
-      intervalRef.current = setInterval(detectFace, 150);
+      intervalRef.current = setInterval(detectFace, 100);
     } else {
       clearInterval(intervalRef.current);
     }
@@ -34,7 +34,7 @@ const useDetectWebcamFace = (
       const detectionPromise: any = faceapi
         .detectSingleFace(
           videoRef as faceapi.TNetInput,
-          new faceapi.TinyFaceDetectorOptions()
+          new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.6 })
         )
         .withFaceLandmarks(true);
 

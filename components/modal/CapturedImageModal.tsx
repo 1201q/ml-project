@@ -1,12 +1,11 @@
-import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
+import { capturedImageAtom } from "@/context/atoms";
 import { motion } from "framer-motion";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import Image from "next/image";
-import { useRouter } from "next/router";
+
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
-import { SizeType } from "@/types/types";
 
 const modalVariants = {
   initial: {
@@ -24,40 +23,42 @@ const modalVariants = {
   },
 };
 
-const ImageConfirmModal = ({
+const CapturedImageModal = ({
   setIsOpen,
 }: {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const imageRef = useRef<HTMLImageElement>(null);
+  const capturedImageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const router = useRouter();
-  const [imgSize, setSize] = useAtom(imgSizeAtom);
-  const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
-  const [displayImgSize, setDisplayImgSize] = useState<SizeType | undefined>();
-  const [btnContainerVisible, setBtnContainerVisible] = useState(false);
-  const [isDetected, setIsDetected] = useState(false);
+  const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
+  const [canvasSize, setCanvasSize] = useState<
+    undefined | { width: number; height: number }
+  >(undefined);
 
   const detectFace = async () => {
-    const captureImageRef = imageRef.current;
-    const detecterRef = canvasRef.current;
+    const img = capturedImageRef.current;
+    const canvas = canvasRef.current;
 
-    if (captureImageRef && detecterRef) {
-      const detectionPromise: any = faceapi.detectSingleFace(
-        captureImageRef as faceapi.TNetInput,
-        new faceapi.TinyFaceDetectorOptions()
-      );
+    if (img && canvas) {
+      const detectionPromise: any = faceapi
+        .detectSingleFace(
+          img as faceapi.TNetInput,
+          new faceapi.TinyFaceDetectorOptions()
+        )
+        .withAgeAndGender();
 
       const displaySize = {
-        width: captureImageRef.clientWidth,
-        height: captureImageRef.clientHeight,
+        width: img.clientWidth,
+        height: img.clientHeight,
       };
 
       detectionPromise
-        .then(async (detections: faceapi.FaceDetection) => {
-          if (detections) {
-            const box = detections?.box;
+        .then(async (detections: any) => {
+          if (detections && detections.detection) {
+            console.log(detections);
+            const box = detections?.detection.box;
+
             if (
               box &&
               box.x !== null &&
@@ -66,51 +67,46 @@ const ImageConfirmModal = ({
               box.height !== null
             ) {
               const resizedDetections = faceapi.resizeResults(
-                detections,
+                detections.detection,
                 displaySize
               );
 
-              const context = detecterRef.getContext("2d");
+              const context = canvas.getContext("2d");
 
               if (context) {
-                context.clearRect(0, 0, detecterRef.width, detecterRef.height);
+                context.clearRect(0, 0, canvas.width, canvas.height);
                 const drawBox = new faceapi.draw.DrawBox(
                   resizedDetections.box,
                   { lineWidth: 3 }
                 );
-                drawBox.draw(detecterRef);
-                setIsDetected(true);
+                drawBox.draw(canvas);
               }
             }
-            setBtnContainerVisible(true);
           } else {
-            const context = detecterRef.getContext("2d");
+            const context = canvas.getContext("2d");
             if (context) {
-              context.clearRect(0, 0, detecterRef.width, detecterRef.height);
+              context.clearRect(0, 0, canvas.width, canvas.height);
             }
-            setIsDetected(false);
-            setBtnContainerVisible(true);
           }
         })
         .catch((error: Error) => {
           console.error(error);
-          setBtnContainerVisible(true);
-          setIsDetected(false);
         });
     }
   };
 
   useEffect(() => {
-    return () => setDisplayImgSize(undefined);
+    return () => {
+      setCanvasSize(undefined);
+      setCapturedImage(undefined);
+    };
   }, []);
 
   useEffect(() => {
-    if (displayImgSize) {
-      console.log(displayImgSize);
-      console.log(imgSize);
+    if (canvasSize) {
       detectFace();
     }
-  }, [displayImgSize]);
+  }, [canvasSize]);
 
   return (
     <Container>
@@ -120,35 +116,33 @@ const ImageConfirmModal = ({
         initial="initial"
         exit="exit"
       >
-        {typeof imgSrc === "string" && imgSize && (
-          <ImageContainer ratio={imgSize?.width / imgSize?.height}>
+        {capturedImage && (
+          <ImageContainer ratio={capturedImage.width / capturedImage.height}>
             <Image
-              ref={imageRef}
-              src={imgSrc}
-              alt="captureImage"
-              fill={true}
+              ref={capturedImageRef}
+              src={capturedImage.src}
+              fill
+              alt="face"
               style={{ borderRadius: "15px" }}
               onLoad={() => {
-                if (imageRef.current) {
-                  const renderImg = imageRef.current;
-
-                  setDisplayImgSize({
-                    width: renderImg.clientWidth,
-                    height: renderImg.clientHeight,
-                  });
+                if (capturedImageRef.current) {
+                  const { clientWidth, clientHeight } =
+                    capturedImageRef.current;
+                  setCanvasSize({ width: clientWidth, height: clientHeight });
                 }
               }}
             />
-
-            {displayImgSize && (
-              <Detector
+            {canvasSize && (
+              <canvas
+                style={{ position: "absolute" }}
                 ref={canvasRef}
-                width={displayImgSize.width}
-                height={displayImgSize.height}
+                width={canvasSize.width}
+                height={canvasSize.height}
               />
             )}
           </ImageContainer>
         )}
+
         <ButtonContainer>
           <Button
             onClick={() => {
@@ -161,23 +155,12 @@ const ImageConfirmModal = ({
             다시 찍을게요
           </Button>
           <Button
-            onClick={() => {
-              if (imageRef.current) {
-                const ref = imageRef.current;
-                setSize({
-                  width: ref.clientWidth,
-                  height: ref.clientHeight,
-                });
-                console.log(ref.clientWidth, ref.clientHeight);
-                router.push("/select_image/upload");
-              }
-            }}
             bg={"rgb(49, 130, 246)"}
             font={"white"}
             whileTap={{ scale: 0.97 }}
             whileHover={{ filter: "brightness(0.8)" }}
           >
-            업로드
+            이 얼굴로 할게요
           </Button>
         </ButtonContainer>
       </ModalContainer>
@@ -207,10 +190,6 @@ const ModalContainer = styled(motion.div)`
   margin: 0px 13px;
   border-radius: 25px;
   overflow: hidden;
-
-  @media screen and (max-width: 450px) {
-    max-height: calc(100dvh - 100px);
-  }
 `;
 
 const ButtonContainer = styled.div`
@@ -245,8 +224,4 @@ const Button = styled(motion.button)<{ bg: string; font: string }>`
   -webkit-tap-highlight-color: transparent;
 `;
 
-const Detector = styled.canvas`
-  position: absolute;
-`;
-
-export default ImageConfirmModal;
+export default CapturedImageModal;

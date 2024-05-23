@@ -1,78 +1,47 @@
 import Camera from "@/components/capture/Camera";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
-import ImageConfirmModal from "../modal/ImageConfirmModal";
+import CapturedImageModal from "../modal/CapturedImageModal";
 import { useAtom } from "jotai";
-import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
+import { capturedImageAtom } from "@/context/atoms";
 import Webcam from "react-webcam";
-import nextURLPush from "@/utils/nextURLPush";
-import { useRouter } from "next/router";
-import { SizeType } from "@/types/types";
 
 const CapturePage = () => {
-  const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const [score, setScore] = useState<number>(NaN);
   const [isTiltingFace, setIsTiltingFace] = useState(false);
   const [isImgConfirmModalOpen, setIsImgConfirmModalOpen] = useState(false);
-  const [imgSrc, setImgSrc] = useAtom(imgSrcAtom);
-  const [imgSize, setImgSize] = useAtom(imgSizeAtom);
 
-  const onCapture = () => {
-    const img = webcamRef.current?.getScreenshot();
+  const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
 
-    const size = {
-      width: webcamRef.current?.video?.clientWidth,
-      height: webcamRef.current?.video?.clientHeight,
-    } as SizeType;
+  const onCapture = async () => {
+    const imgSrc = webcamRef.current?.getScreenshot();
+    const { clientWidth, clientHeight } = webcamRef.current
+      ?.video as HTMLVideoElement;
 
-    if (img && size) {
-      setImgSize(size);
-      setImgSrc(img);
-    }
-  };
-
-  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files !== null && e.target.files.length >= 1) {
-      const file = e.target.files[0];
-
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onload = function (e) {
-        const image = new Image();
-        image.src = e.target?.result as string;
-
-        image.onload = function () {
-          const width = image.width;
-          const height = image.height;
-          console.log(width, height);
-
-          if (image) {
-            setImgSrc(image.src);
-            setImgSize({
-              width: width,
-              height: height,
-            });
-            // nextURLPush(router, "/select_image/upload");
-          }
-        };
-      };
-    }
-  };
-
-  useEffect(() => {
     if (imgSrc) {
+      setCapturedImage({
+        src: imgSrc,
+        width: clientWidth,
+        height: clientHeight,
+      });
+
       setIsImgConfirmModalOpen(true);
     }
-  }, [imgSrc]);
 
-  useEffect(() => {
-    setImgSrc(null);
-    setImgSize(null);
-    setIsImgConfirmModalOpen(false);
-  }, []);
+    // const response = await fetch("/api/detect-face", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ image: imgSrc }),
+    // });
+
+    // const data = await response.json();
+
+    // console.log(data.image);
+  };
 
   const getIndicatorBg = (score: number, isTiltingFace: boolean): string => {
     if (isTiltingFace) {
@@ -100,14 +69,7 @@ const CapturePage = () => {
         <StorageBtn
           whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
           whileHover={{ backgroundColor: "#8080807e" }}
-          htmlFor="file"
         >
-          <FileInput
-            id="file"
-            type="file"
-            accept="image/*"
-            onChange={onUpload}
-          />
           기존 이미지를 가져올게요
         </StorageBtn>
 
@@ -124,7 +86,7 @@ const CapturePage = () => {
       </PercentIndicator>
       <AnimatePresence>
         {isImgConfirmModalOpen && (
-          <ImageConfirmModal setIsOpen={setIsImgConfirmModalOpen} />
+          <CapturedImageModal setIsOpen={setIsImgConfirmModalOpen} />
         )}
       </AnimatePresence>
     </Container>
@@ -147,7 +109,7 @@ const ControllerContainer = styled.div`
   background-color: black;
 `;
 
-const StorageBtn = styled(motion.label)`
+const StorageBtn = styled(motion.button)`
   font-size: 15px;
   color: #808080;
   z-index: 100;
@@ -194,7 +156,4 @@ const PercentIndicator = styled.div<{ bg: string }>`
   transform: translateX(-50%);
 `;
 
-const FileInput = styled.input`
-  display: none;
-`;
 export default CapturePage;

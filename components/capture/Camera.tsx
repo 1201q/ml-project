@@ -3,11 +3,13 @@ import { Dispatch, RefObject, SetStateAction, useRef } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 import useDetectWebcamFace from "./hooks/useDetectWebcamFace";
+import { DetectBoxDataType, SetState } from "@/types/types";
 
 interface CameraPropsType {
   webcamRef: RefObject<Webcam>;
-  setScore: Dispatch<SetStateAction<number>>;
-  setIsTiltingFace: Dispatch<SetStateAction<boolean>>;
+  setScore: SetState<number>;
+  setIsTiltingFace: SetState<boolean>;
+
   isStop: boolean;
 }
 
@@ -15,6 +17,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
   isStop,
   setScore,
   setIsTiltingFace,
+
   webcamRef,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,7 +57,6 @@ const CameraComponent: React.FC<CameraPropsType> = ({
           />
         </>
       )}
-
       <BarContainer type={"bottom"}></BarContainer>
     </Container>
   );
