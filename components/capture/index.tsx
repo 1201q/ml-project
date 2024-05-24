@@ -12,7 +12,7 @@ const CapturePage = () => {
   const [score, setScore] = useState<number>(NaN);
   const [isTiltingFace, setIsTiltingFace] = useState(false);
   const [isImgConfirmModalOpen, setIsImgConfirmModalOpen] = useState(false);
-
+  const [isLoaded, setIsLoaded] = useState(false);
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
 
   const onCapture = async () => {
@@ -51,6 +51,7 @@ const CapturePage = () => {
         webcamRef={webcamRef}
         setScore={setScore}
         setIsTiltingFace={setIsTiltingFace}
+        setIsLoaded={setIsLoaded}
         isStop={isImgConfirmModalOpen}
       />
       <ControllerContainer>
@@ -65,13 +66,19 @@ const CapturePage = () => {
           <CaptureButton onClick={onCapture} whileTap={{ scale: 0.9 }} />
         </CaptureBtnContainer>
       </ControllerContainer>
-      <PercentIndicator bg={getIndicatorBg(score, isTiltingFace)}>
-        {isTiltingFace
-          ? "얼굴이 기울어졌어요"
-          : score
-          ? `얼굴일 확률 ${score.toFixed()}%`
-          : "얼굴을 인식할 수 없어요"}
-      </PercentIndicator>
+      {!isLoaded ? (
+        <PercentIndicator bg={"rgba(240, 68, 82, 0.8)"}>
+          로딩중
+        </PercentIndicator>
+      ) : (
+        <PercentIndicator bg={getIndicatorBg(score, isTiltingFace)}>
+          {isTiltingFace
+            ? "얼굴이 기울어졌어요"
+            : score
+            ? `얼굴일 확률 ${score.toFixed()}%`
+            : "얼굴을 인식할 수 없어요"}
+        </PercentIndicator>
+      )}
       <AnimatePresence>
         {isImgConfirmModalOpen && (
           <CapturedImageModal setIsOpen={setIsImgConfirmModalOpen} />

@@ -4,16 +4,29 @@ import Header from "../Header";
 import { PuffLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import nextURLPush from "@/utils/nextURLPush";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useAtomValue } from "jotai";
+import {
+  capturedImageAtom,
+  detectedFaceDataAtom,
+  detectedFaceImageAtom,
+} from "@/context/atoms";
+
+const MODAL_X_PADDING = 66;
+const MODAL_Y_PADDING = 50;
 
 const ResultLoading = () => {
   const router = useRouter();
+  const capturedImageRef = useRef<HTMLImageElement>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const capturedImage = useAtomValue(capturedImageAtom);
+  const imgData = useAtomValue(detectedFaceDataAtom);
 
   useEffect(() => {
     setTimeout(() => {
       setIsComplete(true);
-    }, 3000);
+    }, 2000);
   }, []);
   return (
     <Container>
@@ -35,7 +48,7 @@ const ResultLoading = () => {
             transition={{ delay: 0.1 }}
           >
             <TitleText>예측 결과가 나왔어요!</TitleText>
-            <SmallText>사진은 선물이에요!</SmallText>
+            <SmallText>지금 보러 가보세요!</SmallText>
           </TitleContainer>
         )}
 
@@ -77,9 +90,23 @@ const Container = styled(motion.div)`
   flex-direction: column;
 `;
 const ContentsContainer = styled.div`
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
   padding: 0px 20px;
   height: calc(100% - 60px);
 `;
+
+const ImageContainer = styled.div<{ width: number; height: number }>`
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin: 30px 0px 0px 0px;
+  width: ${(props) => `${props.width}px`};
+  height: ${(props) => `${props.height}px`};
+`;
+
 const TitleText = styled(motion.p)`
   font-size: 28px;
   font-weight: 700;
@@ -95,7 +122,9 @@ const SmallText = styled.p`
 `;
 
 const TitleContainer = styled(motion.div)`
-  margin-top: 30px;
+  width: 100%;
+  text-align: left;
+  margin-top: 20px;
 `;
 
 const LoadingContainer = styled.div`

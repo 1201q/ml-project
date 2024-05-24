@@ -11,7 +11,8 @@ export const capturedImageAtom = atom<
 >(undefined);
 
 export const detectedFaceImageAtom = atom<
-  { src: string; width: number; height: number } | undefined
+  | { src: string; width: number; height: number; x: number; y: number }
+  | undefined
 >(undefined);
 
 export const detectedFaceDataAtom = atom<any | undefined>(undefined);

@@ -1,15 +1,17 @@
 import useSize from "@/utils/useSize";
-import { Dispatch, RefObject, SetStateAction, useRef } from "react";
+import { Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 import useDetectWebcamFace from "./hooks/useDetectWebcamFace";
 import { DetectBoxDataType, SetState } from "@/types/types";
+import Image from "next/image";
+import ViewFiner from "@/public/viewfinder.svg";
 
 interface CameraPropsType {
   webcamRef: RefObject<Webcam>;
   setScore: SetState<number>;
   setIsTiltingFace: SetState<boolean>;
-
+  setIsLoaded: SetState<boolean>;
   isStop: boolean;
 }
 
@@ -17,6 +19,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
   isStop,
   setScore,
   setIsTiltingFace,
+  setIsLoaded,
 
   webcamRef,
 }) => {
@@ -29,7 +32,14 @@ const CameraComponent: React.FC<CameraPropsType> = ({
     height: webcamRef.current?.video?.clientHeight,
   };
 
-  useDetectWebcamFace(webcamRef, canvasRef, isStop, setScore, setIsTiltingFace);
+  useDetectWebcamFace(
+    webcamRef,
+    canvasRef,
+    isStop,
+    setScore,
+    setIsTiltingFace,
+    setIsLoaded
+  );
 
   return (
     <Container ref={containerRef}>
@@ -55,6 +65,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
             width={cameraSize.width}
             height={cameraSize.height}
           />
+          <ViewFiner />
         </>
       )}
       <BarContainer type={"bottom"}></BarContainer>
@@ -71,6 +82,19 @@ const Container = styled.div`
   background-color: black;
   overflow: hidden;
   position: relative;
+
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    max-width: 300px;
+    max-height: 300px;
+    fill: gray;
+    z-index: 100;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 const BarContainer = styled.div<{ type: "top" | "bottom" }>`

@@ -1,4 +1,4 @@
-import { useRef, useEffect, RefObject } from "react";
+import { useRef, useEffect, RefObject, useState } from "react";
 import * as faceapi from "face-api.js";
 import Webcam from "react-webcam";
 import { SetState } from "@/types/types";
@@ -8,7 +8,8 @@ const useDetectWebcamFace = (
   canvasRef: RefObject<HTMLCanvasElement>,
   isStop: boolean,
   setScore: SetState<number>,
-  setIsTiltingFace: SetState<boolean>
+  setIsTiltingFace: SetState<boolean>,
+  setIsLoaded: SetState<boolean>
 ) => {
   const intervalRef = useRef<NodeJS.Timeout>();
 
@@ -68,13 +69,14 @@ const useDetectWebcamFace = (
               if (context) {
                 context.clearRect(0, 0, detecterRef.width, detecterRef.height);
                 const drawBox = new faceapi.draw.DrawBox(resizedDetection.box, {
-                  lineWidth: 3,
-                  boxColor: "#0339fc",
+                  lineWidth: 2,
+                  boxColor: "white",
                 });
                 drawBox.draw(detecterRef);
                 // faceapi.draw.drawFaceLandmarks(detecterRef, resizedLandmark);
               }
               setScore(detection.score * 100);
+              setIsLoaded(true);
             }
           } else {
             const context = detecterRef.getContext("2d");
@@ -82,6 +84,7 @@ const useDetectWebcamFace = (
               context.clearRect(0, 0, detecterRef.width, detecterRef.height);
             }
             setScore(NaN);
+            setIsLoaded(true);
           }
         })
         .catch((error: Error) => {

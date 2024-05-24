@@ -34,7 +34,7 @@ const SelectGenderPage = () => {
               alt="myface"
               width={face.width}
               height={face.height}
-              style={{ borderRadius: "100px" }}
+              style={{ borderRadius: "15px" }}
             />
           )}
         </FaceContainer>
@@ -95,7 +95,7 @@ const TitleText = styled(motion.p)`
 `;
 
 const TitleContainer = styled(motion.div)`
-  margin-top: 30px;
+  margin-top: 20px;
 `;
 const ButtonContainer = styled(motion.div)`
   width: calc(100% - 40px);

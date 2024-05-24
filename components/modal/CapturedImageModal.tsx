@@ -85,6 +85,8 @@ const CapturedImageModal = ({
                 detections.detection,
                 displaySize
               );
+              // const resizedLandmark: faceapi.FaceLandmarks =
+              //   faceapi.resizeResults(detections, displaySize);
 
               const context = canvas.getContext("2d");
 
@@ -95,6 +97,7 @@ const CapturedImageModal = ({
                   { lineWidth: 3 }
                 );
                 drawBox.draw(canvas);
+                // faceapi.draw.drawFaceLandmarks(canvas, resizedLandmark);
                 setIsFaceDetected(true);
                 setDetectedFaceData(detections);
               }
@@ -130,6 +133,8 @@ const CapturedImageModal = ({
           src: croppedImage,
           width: width,
           height: height,
+          x: x,
+          y: y,
         });
       }
     }
@@ -138,7 +143,7 @@ const CapturedImageModal = ({
   useEffect(() => {
     return () => {
       setCanvasSize(undefined);
-      setCapturedImage(undefined);
+
       setIsFaceDetected(false);
     };
   }, []);
@@ -164,6 +169,7 @@ const CapturedImageModal = ({
               src={capturedImage.src}
               fill
               alt="face"
+              quality={100}
               style={{ borderRadius: "15px" }}
               onLoad={() => {
                 if (capturedImageRef.current) {
