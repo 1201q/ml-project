@@ -1,89 +1,330 @@
 import Header from "@/components/Header";
-import { imgSizeAtom, imgSrcAtom } from "@/context/atoms";
+import {
+  detectedFaceDataAtom,
+  detectedFaceImageAtom,
+  imgSizeAtom,
+  imgSrcAtom,
+  uploadedImageAtom,
+} from "@/context/atoms";
 import { motion } from "framer-motion";
-import { useAtomValue } from "jotai";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import NextImage from "next/image";
+import {
+  ChangeEvent,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
+import { loadImage } from "canvas";
+import * as canvas from "canvas";
+import nextURLPush from "@/utils/nextURLPush";
+import { useRouter } from "next/router";
+const DISPLAY_SIDE_MARGIN = 40;
+const DISPLAY_TOPBOTTOM_MARGIN = 60 + 75;
 
 const UploadPage = () => {
-  const imgSrc = useAtomValue(imgSrcAtom);
-  const imgSize = useAtomValue(imgSizeAtom);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const recogBoxRef = useRef<HTMLCanvasElement>(null);
+  const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const uploadedImageRef = useRef<HTMLImageElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    detect();
-  }, []);
+  const [isTooBigImage, setIsTooBigImage] = useState(false);
+  const [isDetectedFace, setIsDetectedFace] = useState(false);
+  const [isDetectedMultipleFace, setIsDetectedMultipleFace] = useState(false);
+
+  const [uploadedImage, setUploadedImage] = useAtom(uploadedImageAtom);
+  const [detectedFaceImage, setDetectedFaceImage] = useAtom(
+    detectedFaceImageAtom
+  );
+
+  const [detectedFaceData, setDetectedFaceData] = useAtom(detectedFaceDataAtom);
 
   const detect = async () => {
-    const ref = imgRef.current;
-    const canvasRef = recogBoxRef.current;
+    const imageRef = uploadedImageRef.current;
+    const detecterRef = canvasRef.current;
 
-    if (ref && canvasRef && imgSize) {
+    if (imageRef && detecterRef) {
       const displaySize = {
-        width: ref.clientWidth,
-        height: ref.clientHeight,
+        width: imageRef.clientWidth,
+        height: imageRef.clientHeight,
       };
 
-      faceapi.matchDimensions(canvasRef, displaySize);
+      try {
+        const detections = await faceapi.detectAllFaces(
+          imageRef as faceapi.TNetInput,
+          new faceapi.TinyFaceDetectorOptions()
+        );
 
-      const detections = await faceapi.detectAllFaces(
-        ref as faceapi.TNetInput,
-        new faceapi.TinyFaceDetectorOptions()
-      );
-
-      const resizedDetections = faceapi.resizeResults(detections, displaySize);
-
-      const context = canvasRef.getContext("2d");
-      if (context) {
-        context.clearRect(0, 0, canvasRef.width, canvasRef.height);
-        faceapi.draw.drawDetections(canvasRef, resizedDetections);
+        if (detections && detections.length > 1) {
+          setIsDetectedMultipleFace(true);
+        } else if (detections && detections.length === 1) {
+          const box = detections[0].box;
+          setDetectedFaceData(detections[0]);
+          getCroppedFace(box);
+          const resizedDetection: faceapi.FaceDetection = faceapi.resizeResults(
+            detections[0],
+            displaySize
+          );
+          const context = detecterRef.getContext("2d");
+          if (context) {
+            context.clearRect(0, 0, detecterRef.width, detecterRef.height);
+            const drawBox = new faceapi.draw.DrawBox(resizedDetection.box, {
+              lineWidth: 2,
+              boxColor: "blue",
+            });
+            drawBox.draw(detecterRef);
+            setIsDetectedFace(true);
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   };
 
+  const getImageFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const image = new Image();
+        const url = e.target?.result as string;
+        image.onload = () => {
+          setUploadedImage({
+            src: url,
+            width: image.width,
+            height: image.height,
+          });
+        };
+        image.src = url;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setUploadedImage(undefined);
+    }
+  };
+
+  const getCroppedFace = async (faceBox: faceapi.Box) => {
+    if (uploadedImage?.src) {
+      const img = await loadImage(uploadedImage?.src);
+      const { x, y, width, height } = faceBox;
+      const faceCanvas = canvas.createCanvas(width, height);
+      const ctx = faceCanvas.getContext("2d");
+      ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+      const croppedImage = faceCanvas.toDataURL();
+
+      if (croppedImage) {
+        setDetectedFaceImage({
+          src: croppedImage,
+          width: width,
+          height: height,
+          x: x,
+          y: y,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (containerRef.current && uploadedImage) {
+      const { clientWidth, clientHeight } = containerRef?.current;
+
+      if (
+        uploadedImage.width > clientWidth - DISPLAY_SIDE_MARGIN ||
+        uploadedImage.height > clientHeight - DISPLAY_TOPBOTTOM_MARGIN
+      ) {
+        setIsTooBigImage(true);
+      } else {
+        setIsTooBigImage(false);
+      }
+    } else {
+      setIsDetectedFace(false);
+      setIsDetectedMultipleFace(false);
+    }
+  }, [uploadedImage]);
+
   return (
-    <Container>
+    <Container ref={containerRef}>
       <Header currentMenu="이미지 업로드" />
-      {imgSrc && imgSize && (
-        <ImageContainer>
-          <Image
-            ref={imgRef}
-            src={imgSrc}
-            alt="captureImage"
-            fill
-            style={{
-              objectFit: "none",
-              borderRadius: "15px",
+      {uploadedImage && (
+        <ContentsContainer ratio={uploadedImage?.width / uploadedImage?.height}>
+          <ImageContainer
+            initial={{ opacity: 0, y: 50, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            ratio={uploadedImage?.width / uploadedImage?.height}
+          >
+            <NextImage
+              ref={uploadedImageRef}
+              src={uploadedImage}
+              alt="uploadedImage"
+              fill={isTooBigImage}
+              style={{ borderRadius: "12px" }}
+              onLoad={() => {
+                const imageRef = uploadedImageRef.current;
+                const canvas = canvasRef.current;
+                if (canvas && imageRef) {
+                  canvas.width = imageRef.clientWidth;
+                  canvas.height = imageRef.clientHeight;
+                  detect();
+                }
+              }}
+            />
+            <canvas
+              ref={canvasRef}
+              style={{
+                position: "absolute",
+                zIndex: 10000,
+              }}
+            />
+          </ImageContainer>
+        </ContentsContainer>
+      )}
+      {isDetectedFace && (
+        <ButtonContainer
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+        >
+          <Button
+            bg={"#f2f4f6"}
+            font={"gray"}
+            whileTap={{ scale: 0.97 }}
+            htmlFor="reupload"
+          >
+            다른 사진으로 할래요
+            <input
+              id="reupload"
+              type="file"
+              accept="image/*"
+              onChange={(event) => {
+                setUploadedImage(undefined);
+                getImageFile(event);
+              }}
+              style={{ display: "none" }}
+            />
+          </Button>
+          <Button
+            onClick={() => {
+              nextURLPush(router, "/stage/gender");
             }}
-          />
-          <canvas
-            ref={recogBoxRef}
-            style={{ position: "absolute", top: 0, left: 0, zIndex: 10000 }}
-          />
-        </ImageContainer>
+            bg={"rgb(49, 130, 246)"}
+            font={"white"}
+            whileTap={{ scale: 0.97 }}
+            whileHover={{ filter: "brightness(0.8)" }}
+          >
+            이 얼굴로 할게요
+          </Button>
+        </ButtonContainer>
+      )}
+      {!isDetectedFace && (
+        <ButtonContainer
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+        >
+          <Button
+            onClick={() => {}}
+            bg={"#f2f4f6"}
+            font={"gray"}
+            whileTap={{ scale: 0.97 }}
+            htmlFor="reupload2"
+          >
+            다시 시도해주세요
+            <input
+              id="reupload2"
+              type="file"
+              accept="image/*"
+              onChange={(event) => {
+                setUploadedImage(undefined);
+                getImageFile(event);
+              }}
+              style={{ display: "none" }}
+            />
+          </Button>
+        </ButtonContainer>
+      )}
+      {isDetectedMultipleFace && (
+        <ButtonContainer
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+        >
+          <Button
+            onClick={() => {}}
+            bg={"#f2f4f6"}
+            font={"gray"}
+            whileTap={{ scale: 0.97 }}
+            htmlFor="reupload3"
+          >
+            한명까지만 인식할 수 있어요
+            <input
+              id="reupload3"
+              type="file"
+              accept="image/*"
+              onChange={(event) => {
+                setUploadedImage(undefined);
+                getImageFile(event);
+              }}
+              style={{ display: "none" }}
+            />
+          </Button>
+        </ButtonContainer>
       )}
     </Container>
   );
 };
 
 const Container = styled(motion.div)`
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
 `;
-
-const ImageContainer = styled.div`
-  width: calc(100% - 40px);
-  height: calc(100% - 200px);
-  margin: 20px 20px;
-  position: relative;
+const ContentsContainer = styled.div<{ ratio: number }>`
+  aspect-ratio: ${(props) => props.ratio};
+  display: flex;
+  justify-content: center;
+  padding: 20px 20px;
+  max-height: calc(100% - 245px);
 
   @media screen and (max-width: 450px) {
-    max-height: calc(100% - 200px);
+    max-height: calc(100% - 205px);
   }
+`;
+
+const ImageContainer = styled(motion.div)<{ ratio: number }>`
+  display: flex;
+  justify-content: center;
+  aspect-ratio: ${(props) => props.ratio};
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  position: relative;
+`;
+
+const ButtonContainer = styled(motion.div)`
+  position: absolute;
+  width: calc(100% - 40px);
+  bottom: 0;
+  margin: 0px 20px 20px 20px;
+  display: flex;
+  gap: 15px;
+  background-color: white;
+`;
+const Button = styled(motion.label)<{ bg: string; font: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 55px;
+  border-radius: 15px;
+  background-color: ${(props) => props.bg};
+  color: ${(props) => props.font};
+  font-size: 17px;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 `;
 
 export default UploadPage;

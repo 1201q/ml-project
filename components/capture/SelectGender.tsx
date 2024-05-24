@@ -34,7 +34,10 @@ const SelectGenderPage = () => {
               alt="myface"
               width={face.width}
               height={face.height}
-              style={{ borderRadius: "15px" }}
+              style={{
+                maxWidth: "150px",
+                maxHeight: "150px",
+              }}
             />
           )}
         </FaceContainer>
