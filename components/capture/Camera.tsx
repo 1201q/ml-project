@@ -1,10 +1,10 @@
 import useSize from "@/utils/useSize";
-import { Dispatch, RefObject, SetStateAction, useEffect, useRef } from "react";
+import { RefObject, useRef } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 import useDetectWebcamFace from "./hooks/useDetectWebcamFace";
-import { DetectBoxDataType, SetState } from "@/types/types";
-import Image from "next/image";
+import { SetState } from "@/types/types";
+
 import ViewFiner from "@/public/viewfinder.svg";
 
 interface CameraPropsType {
@@ -87,8 +87,8 @@ const Container = styled.div`
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 50%;
-    height: 50%;
+    width: 60%;
+    height: 60%;
     max-width: 300px;
     max-height: 300px;
     fill: white;
