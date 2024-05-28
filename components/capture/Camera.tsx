@@ -53,7 +53,7 @@ const CameraComponent: React.FC<CameraPropsType> = ({
               zIndex: 1,
               overflow: "hidden",
             }}
-            screenshotQuality={100}
+            screenshotQuality={1}
             screenshotFormat="image/jpeg"
             mirrored={true}
             videoConstraints={{
@@ -91,7 +91,7 @@ const Container = styled.div`
     height: 50%;
     max-width: 300px;
     max-height: 300px;
-    fill: gray;
+    fill: white;
     z-index: 100;
     transform: translate(-50%, -50%);
   }

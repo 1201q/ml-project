@@ -37,6 +37,7 @@ const SelectGenderPage = () => {
               style={{
                 maxWidth: "150px",
                 maxHeight: "150px",
+                objectFit: "cover",
               }}
             />
           )}

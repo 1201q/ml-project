@@ -137,7 +137,7 @@ const StorageBtn = styled(motion.label)`
   font-size: 15px;
   color: #808080;
   z-index: 100;
-  padding: 5px 10px;
+  padding: 7px 12px;
   border-radius: 7px;
   margin-top: 17px;
   cursor: pointer;

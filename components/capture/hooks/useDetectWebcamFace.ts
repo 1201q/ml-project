@@ -11,21 +11,38 @@ const useDetectWebcamFace = (
   setIsTiltingFace: SetState<boolean>,
   setIsLoaded: SetState<boolean>
 ) => {
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const requestRef = useRef<number>();
+  const previousTimeRef = useRef<number>();
 
   useEffect(() => {
     if (!isStop) {
-      intervalRef.current = setInterval(detectFace, 100);
+      requestRef.current = requestAnimationFrame(animate);
     } else {
-      clearInterval(intervalRef.current);
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
     }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
       }
     };
   }, [isStop]);
+
+  const animate = (time: number) => {
+    if (previousTimeRef.current != undefined) {
+      const deltaTime = time - previousTimeRef.current;
+
+      if (deltaTime >= 100) {
+        detectFace();
+        previousTimeRef.current = time;
+      }
+    } else {
+      previousTimeRef.current = time;
+    }
+    requestRef.current = requestAnimationFrame(animate);
+  };
 
   const detectFace = async () => {
     const videoRef = webcamRef.current?.video;
@@ -35,7 +52,7 @@ const useDetectWebcamFace = (
       const detectionPromise: any = faceapi
         .detectSingleFace(
           videoRef as faceapi.TNetInput,
-          new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.6 })
+          new faceapi.TinyFaceDetectorOptions()
         )
         .withFaceLandmarks(true);
 
@@ -69,7 +86,7 @@ const useDetectWebcamFace = (
               if (context) {
                 context.clearRect(0, 0, detecterRef.width, detecterRef.height);
                 const drawBox = new faceapi.draw.DrawBox(resizedDetection.box, {
-                  lineWidth: 2,
+                  lineWidth: 1,
                   boxColor: "white",
                 });
                 drawBox.draw(detecterRef);

@@ -184,92 +184,110 @@ const UploadPage = () => {
         </ContentsContainer>
       )}
       {isDetectedFace && (
-        <ButtonContainer
+        <BottomContainer
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
         >
-          <Button
-            bg={"#f2f4f6"}
-            font={"gray"}
-            whileTap={{ scale: 0.97 }}
-            htmlFor="reupload"
-          >
-            다른 사진으로 할래요
-            <input
-              id="reupload"
-              type="file"
-              accept="image/*"
-              onChange={(event) => {
-                setUploadedImage(undefined);
-                getImageFile(event);
+          <SubMenuContainer>
+            <p>이미지 직접 자르기</p>
+          </SubMenuContainer>
+          <ButtonContainer>
+            <Button
+              bg={"#f2f4f6"}
+              font={"gray"}
+              whileTap={{ scale: 0.97 }}
+              htmlFor="reupload"
+            >
+              다른 사진으로 할래요
+              <input
+                id="reupload"
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  setUploadedImage(undefined);
+                  getImageFile(event);
+                }}
+                style={{ display: "none" }}
+              />
+            </Button>
+            <Button
+              onClick={() => {
+                nextURLPush(router, "/stage/gender");
               }}
-              style={{ display: "none" }}
-            />
-          </Button>
-          <Button
-            onClick={() => {
-              nextURLPush(router, "/stage/gender");
-            }}
-            bg={"rgb(49, 130, 246)"}
-            font={"white"}
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ filter: "brightness(0.8)" }}
-          >
-            이 얼굴로 할게요
-          </Button>
-        </ButtonContainer>
+              bg={"rgb(49, 130, 246)"}
+              font={"white"}
+              whileTap={{ scale: 0.97 }}
+              whileHover={{ filter: "brightness(0.8)" }}
+            >
+              이 얼굴로 할게요
+            </Button>
+          </ButtonContainer>
+        </BottomContainer>
       )}
       {!isDetectedFace && (
-        <ButtonContainer
+        <BottomContainer
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
         >
-          <Button
-            onClick={() => {}}
-            bg={"#f2f4f6"}
-            font={"gray"}
-            whileTap={{ scale: 0.97 }}
-            htmlFor="reupload2"
-          >
-            다시 시도해주세요
-            <input
-              id="reupload2"
-              type="file"
-              accept="image/*"
-              onChange={(event) => {
-                setUploadedImage(undefined);
-                getImageFile(event);
-              }}
-              style={{ display: "none" }}
-            />
-          </Button>
-        </ButtonContainer>
+          <SubMenuContainer>
+            <p>이미지 직접 자르기</p>
+          </SubMenuContainer>
+          <ButtonContainer>
+            <Button
+              onClick={() => {}}
+              bg={"#f2f4f6"}
+              font={"gray"}
+              whileTap={{ scale: 0.97 }}
+              htmlFor="reupload2"
+            >
+              얼굴을 인식하지 못했어요
+              <input
+                id="reupload2"
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  setUploadedImage(undefined);
+                  getImageFile(event);
+                }}
+                style={{ display: "none" }}
+              />
+            </Button>
+          </ButtonContainer>
+        </BottomContainer>
       )}
       {isDetectedMultipleFace && (
-        <ButtonContainer
+        <BottomContainer
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
         >
-          <Button
-            onClick={() => {}}
-            bg={"#f2f4f6"}
-            font={"gray"}
-            whileTap={{ scale: 0.97 }}
-            htmlFor="reupload3"
-          >
-            한명까지만 인식할 수 있어요
-            <input
-              id="reupload3"
-              type="file"
-              accept="image/*"
-              onChange={(event) => {
-                setUploadedImage(undefined);
-                getImageFile(event);
-              }}
-              style={{ display: "none" }}
-            />
-          </Button>
-        </ButtonContainer>
+          <SubMenuContainer>
+            <p>이미지 직접 자르기</p>
+          </SubMenuContainer>
+          <ButtonContainer>
+            <Button
+              onClick={() => {}}
+              bg={"#f2f4f6"}
+              font={"gray"}
+              whileTap={{ scale: 0.97 }}
+              htmlFor="reupload3"
+            >
+              한명까지만 인식할 수 있어요
+              <input
+                id="reupload3"
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  setUploadedImage(undefined);
+                  getImageFile(event);
+                }}
+                style={{ display: "none" }}
+              />
+            </Button>
+          </ButtonContainer>
+        </BottomContainer>
       )}
     </Container>
   );
@@ -286,10 +304,10 @@ const ContentsContainer = styled.div<{ ratio: number }>`
   display: flex;
   justify-content: center;
   padding: 20px 20px;
-  max-height: calc(100% - 245px);
+  max-height: calc(100% - 255px);
 
   @media screen and (max-width: 450px) {
-    max-height: calc(100% - 205px);
+    max-height: calc(100% - 225px);
   }
 `;
 
@@ -303,14 +321,35 @@ const ImageContainer = styled(motion.div)<{ ratio: number }>`
   position: relative;
 `;
 
-const ButtonContainer = styled(motion.div)`
+const BottomContainer = styled(motion.div)`
   position: absolute;
-  width: calc(100% - 40px);
+  width: 100%;
   bottom: 0;
-  margin: 0px 20px 20px 20px;
+
   display: flex;
-  gap: 15px;
+  flex-direction: column;
   background-color: white;
+`;
+
+const SubMenuContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 38px;
+
+  p {
+    font-size: 16px;
+
+    color: #808080;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  margin: 0px 20px 20px 20px;
+  gap: 15px;
 `;
 const Button = styled(motion.label)<{ bg: string; font: string }>`
   display: flex;
