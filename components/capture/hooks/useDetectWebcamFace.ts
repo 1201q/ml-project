@@ -52,7 +52,7 @@ const useDetectWebcamFace = (
       const detectionPromise: any = faceapi
         .detectSingleFace(
           videoRef as faceapi.TNetInput,
-          new faceapi.TinyFaceDetectorOptions()
+          new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.45 })
         )
         .withFaceLandmarks(true);
 

@@ -189,9 +189,6 @@ const UploadPage = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <SubMenuContainer>
-            <p>이미지 직접 자르기</p>
-          </SubMenuContainer>
           <ButtonContainer>
             <Button
               bg={"#f2f4f6"}
@@ -231,9 +228,7 @@ const UploadPage = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <SubMenuContainer>
-            <p>이미지 직접 자르기</p>
-          </SubMenuContainer>
+          <SubMenuContainer>{/* <p>이미지 자르기</p> */}</SubMenuContainer>
           <ButtonContainer>
             <Button
               onClick={() => {}}
@@ -263,9 +258,7 @@ const UploadPage = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <SubMenuContainer>
-            <p>이미지 직접 자르기</p>
-          </SubMenuContainer>
+          <SubMenuContainer>{/* <p>이미지 직접 자르기</p> */}</SubMenuContainer>
           <ButtonContainer>
             <Button
               onClick={() => {}}
