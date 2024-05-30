@@ -13,6 +13,7 @@ import styled from "styled-components";
 import * as faceapi from "face-api.js";
 import nextURLPush from "@/utils/nextURLPush";
 import { useRouter } from "next/router";
+import dataURLtoBlob from "@/utils/blob";
 
 const modalVariants = {
   initial: {
@@ -122,19 +123,23 @@ const CapturedImageModal = ({
   const getCroppedFace = async (faceBox: faceapi.Box) => {
     if (capturedImage?.src) {
       const img = await loadImage(capturedImage?.src);
+
       const { x, y, width, height } = faceBox;
       const faceCanvas = canvas.createCanvas(width, height);
       const ctx = faceCanvas.getContext("2d");
       ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
-      const croppedImage = faceCanvas.toDataURL();
 
-      if (croppedImage) {
+      const croppedImage = faceCanvas.toDataURL();
+      const blob = dataURLtoBlob(croppedImage);
+
+      if (croppedImage && blob) {
         setDetectedFaceImage({
           src: croppedImage,
           width: width,
           height: height,
           x: x,
           y: y,
+          blob: blob,
         });
       }
     }

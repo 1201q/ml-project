@@ -12,6 +12,7 @@ import {
 import Webcam from "react-webcam";
 import nextURLPush from "@/utils/nextURLPush";
 import { useRouter } from "next/router";
+import dataURLtoBlob from "@/utils/blob";
 
 const CapturePage = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const CapturePage = () => {
 
   const onCapture = async () => {
     const imgSrc = webcamRef.current?.getScreenshot();
+
     const { clientWidth, clientHeight } = webcamRef.current
       ?.video as HTMLVideoElement;
 
