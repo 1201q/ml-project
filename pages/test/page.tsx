@@ -7,30 +7,30 @@ import React, { ChangeEvent, useState } from "react";
 const Page = () => {
   const [result, setResult] = useState<string[]>([]);
 
-  const url = process.env.NEXT_PUBLIC_GCP_API_URL as string;
-
   function uploadImage(event: ChangeEvent<any>) {
     if (event.target.files) {
       const file = event.target.files[0];
       const blob = new Blob([file], { type: file.type });
+
       setResult([]);
       post(blob);
     }
   }
 
   const post = (blob: Blob) => {
+    const url = `${process.env.NEXT_PUBLIC_GCP_API_URL}/extract` as string;
     const formData = new FormData();
-    let array: string[] = [];
+
     formData.append("file", blob);
+
     axios
-      .post(`${url}/extract`, formData)
+      .post(url, formData)
       .then((res) => {
         if (res.data.faces) {
-          res.data.faces.map((image: string) => {
-            const data = "data:image/jpeg;base64," + image;
-            array.push(data);
+          const faces = res.data.faces.map((image: string) => {
+            return "data:image/jpeg;base64," + image;
           });
-          setResult(array);
+          setResult(faces);
         } else {
           setResult([]);
         }
