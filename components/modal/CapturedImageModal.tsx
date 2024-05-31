@@ -14,6 +14,7 @@ import * as faceapi from "face-api.js";
 import nextURLPush from "@/utils/nextURLPush";
 import { useRouter } from "next/router";
 import dataURLtoBlob from "@/utils/blob";
+import axios from "axios";
 
 const modalVariants = {
   initial: {
@@ -51,6 +52,7 @@ const CapturedImageModal = ({
     undefined | { width: number; height: number }
   >(undefined);
   const [isFaceDetected, setIsFaceDetected] = useState(false);
+  const [isServerFaceDetected, setIsServerFaceDetected] = useState(false);
 
   const detectFace = async () => {
     const img = capturedImageRef.current;
@@ -132,6 +134,8 @@ const CapturedImageModal = ({
       const croppedImage = faceCanvas.toDataURL();
       const blob = dataURLtoBlob(croppedImage);
 
+      verifyFaceDetection(blob);
+
       if (croppedImage && blob) {
         setDetectedFaceImage({
           src: croppedImage,
@@ -143,6 +147,23 @@ const CapturedImageModal = ({
         });
       }
     }
+  };
+
+  const verifyFaceDetection = (blob: Blob) => {
+    const url = `${process.env.NEXT_PUBLIC_GCP_API_URL}/isface` as string;
+    const formData = new FormData();
+    formData.append("file", blob);
+
+    axios
+      .post(url, formData)
+      .then((res) => {
+        if (res.data.isFace) {
+          setIsServerFaceDetected(true);
+        } else {
+          setIsServerFaceDetected(false);
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -196,7 +217,7 @@ const CapturedImageModal = ({
         )}
 
         <ButtonContainer>
-          {isFaceDetected ? (
+          {isFaceDetected && isServerFaceDetected ? (
             <>
               <Button
                 onClick={() => {

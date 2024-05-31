@@ -101,7 +101,7 @@ const CapturePage = () => {
           <CaptureButton onClick={onCapture} whileTap={{ scale: 0.9 }} />
         </CaptureBtnContainer>
       </ControllerContainer>
-      {isLoaded && (
+      {/* {isLoaded && (
         <PercentIndicator bg={getIndicatorBg(score, isTiltingFace)}>
           {isTiltingFace
             ? "얼굴이 기울어졌어요"
@@ -109,7 +109,7 @@ const CapturePage = () => {
             ? `얼굴일 확률 ${score.toFixed()}%`
             : "얼굴을 인식할 수 없어요"}
         </PercentIndicator>
-      )}
+      )} */}
       <AnimatePresence>
         {isImgConfirmModalOpen && (
           <CapturedImageModal setIsOpen={setIsImgConfirmModalOpen} />

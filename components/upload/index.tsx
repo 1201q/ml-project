@@ -22,6 +22,8 @@ import { loadImage } from "canvas";
 import * as canvas from "canvas";
 import nextURLPush from "@/utils/nextURLPush";
 import { useRouter } from "next/router";
+import axios from "axios";
+import dataURLtoBlob from "@/utils/blob";
 const DISPLAY_SIDE_MARGIN = 40;
 const DISPLAY_TOPBOTTOM_MARGIN = 60 + 75;
 
@@ -41,6 +43,7 @@ const UploadPage = () => {
   );
 
   const [detectedFaceData, setDetectedFaceData] = useAtom(detectedFaceDataAtom);
+  const [result, setResult] = useState<string[]>([]);
 
   const detect = async () => {
     const imageRef = uploadedImageRef.current;
@@ -129,6 +132,29 @@ const UploadPage = () => {
     }
   };
 
+  const extractFace = (imageSrc: string) => {
+    const url = `${process.env.NEXT_PUBLIC_GCP_API_URL}/extract` as string;
+    const formData = new FormData();
+    const blob = dataURLtoBlob(imageSrc);
+    formData.append("file", blob);
+
+    axios
+      .post(url, formData)
+      .then((res) => {
+        if (res.data.faces) {
+          const faces = res.data.faces.map((image: string) => {
+            return "data:image/jpeg;base64," + image;
+          });
+          setResult(faces);
+        } else {
+          setResult([]);
+        }
+
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     if (containerRef.current && uploadedImage) {
       const { clientWidth, clientHeight } = containerRef?.current;
@@ -141,6 +167,8 @@ const UploadPage = () => {
       } else {
         setIsTooBigImage(false);
       }
+
+      extractFace(uploadedImage.src);
     } else {
       setIsDetectedFace(false);
       setIsDetectedMultipleFace(false);
@@ -151,6 +179,26 @@ const UploadPage = () => {
     <Container ref={containerRef}>
       <Header currentMenu="이미지 업로드" />
       {uploadedImage && (
+        <ContentsContainer ratio={uploadedImage?.width / uploadedImage?.height}>
+          <ImageContainer
+            initial={{ opacity: 0, y: 50, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            ratio={uploadedImage?.width / uploadedImage?.height}
+          >
+            {result.map((image, index) => (
+              <NextImage
+                src={image}
+                alt={`image-${index}`}
+                width={100}
+                height={100}
+                key={`image-${index}`}
+              />
+            ))}
+          </ImageContainer>
+        </ContentsContainer>
+      )}
+
+      {/* {uploadedImage && (
         <ContentsContainer ratio={uploadedImage?.width / uploadedImage?.height}>
           <ImageContainer
             initial={{ opacity: 0, y: 50, scale: 0.8 }}
@@ -182,8 +230,8 @@ const UploadPage = () => {
             />
           </ImageContainer>
         </ContentsContainer>
-      )}
-      {isDetectedFace && (
+      )} */}
+      {!isDetectedFace && (
         <BottomContainer
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -218,66 +266,6 @@ const UploadPage = () => {
               whileHover={{ filter: "brightness(0.8)" }}
             >
               이 얼굴로 할게요
-            </Button>
-          </ButtonContainer>
-        </BottomContainer>
-      )}
-      {!isDetectedFace && (
-        <BottomContainer
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <SubMenuContainer>{/* <p>이미지 자르기</p> */}</SubMenuContainer>
-          <ButtonContainer>
-            <Button
-              onClick={() => {}}
-              bg={"#f2f4f6"}
-              font={"gray"}
-              whileTap={{ scale: 0.97 }}
-              htmlFor="reupload2"
-            >
-              얼굴을 인식하지 못했어요
-              <input
-                id="reupload2"
-                type="file"
-                accept="image/*"
-                onChange={(event) => {
-                  setUploadedImage(undefined);
-                  getImageFile(event);
-                }}
-                style={{ display: "none" }}
-              />
-            </Button>
-          </ButtonContainer>
-        </BottomContainer>
-      )}
-      {isDetectedMultipleFace && (
-        <BottomContainer
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <SubMenuContainer>{/* <p>이미지 직접 자르기</p> */}</SubMenuContainer>
-          <ButtonContainer>
-            <Button
-              onClick={() => {}}
-              bg={"#f2f4f6"}
-              font={"gray"}
-              whileTap={{ scale: 0.97 }}
-              htmlFor="reupload3"
-            >
-              한명까지만 인식할 수 있어요
-              <input
-                id="reupload3"
-                type="file"
-                accept="image/*"
-                onChange={(event) => {
-                  setUploadedImage(undefined);
-                  getImageFile(event);
-                }}
-                style={{ display: "none" }}
-              />
             </Button>
           </ButtonContainer>
         </BottomContainer>
