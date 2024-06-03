@@ -28,6 +28,7 @@ const StoragePage = () => {
 
   const [selectImageIndex, setSelectImageIndex] = useState<null | number>(null);
   const [isNotSelectImage, setIsNotSelectImage] = useState(false);
+  const [isGenderModalVisible, setIsGenderModalVisible] = useState(false);
 
   const extractFace = () => {
     const url = `${process.env.NEXT_PUBLIC_GCP_API_URL}/extract` as string;
@@ -90,7 +91,7 @@ const StoragePage = () => {
 
   const pushNextStage = () => {
     if (typeof selectImageIndex === "number") {
-      nextURLPush(router, "/stage/gender");
+      setIsGenderModalVisible(true);
     } else {
       setIsNotSelectImage(true);
 
@@ -246,7 +247,7 @@ const StoragePage = () => {
           </ButtonContainer>
         )}
       </>
-      {/* <SelectGenderModal /> */}
+      {isGenderModalVisible && <SelectGenderModal />}
     </Container>
   );
 };

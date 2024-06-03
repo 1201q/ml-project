@@ -7,7 +7,7 @@ const SelectGenderModal = () => {
   const router = useRouter();
   return (
     <Container>
-      <ModalContainer>
+      <ModalContainer initial={{ y: 100 }} animate={{ y: 0 }}>
         <TopContainer>
           <TitleText>남자이신가요? 여자이신가요?</TitleText>
         </TopContainer>
@@ -46,7 +46,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: 200;
+  z-index: 1000;
 `;
 const ModalContainer = styled(motion.div)`
   display: flex;
@@ -68,7 +68,7 @@ const TopContainer = styled.div`
 `;
 
 const TitleText = styled.p`
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 600;
 `;
 const ButtonContainer = styled.div`

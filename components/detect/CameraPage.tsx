@@ -9,6 +9,7 @@ import DetectedResult from "./DetectedResult";
 import DetectIndicator from "./DetectIndicator";
 import nextURLPush from "@/utils/nextURLPush";
 import { useRouter } from "next/router";
+import SelectGenderModal from "../modal/SelectGenderModal";
 
 const CameraPage = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const CameraPage = () => {
   const [isServerFaceDetected, setIsServerFaceDetected] = useState<
     boolean | "loading"
   >("loading");
+  const [isGenderModalVisible, setIsGenderModalVisible] = useState(false);
 
   return (
     <Container>
@@ -68,7 +70,7 @@ const CameraPage = () => {
                 whileTap={{ scale: 0.97 }}
                 whileHover={{ filter: "brightness(0.8)" }}
                 onClick={() => {
-                  nextURLPush(router, "/stage/gender");
+                  setIsGenderModalVisible(true);
                 }}
               >
                 이 얼굴로 할게요
@@ -95,6 +97,7 @@ const CameraPage = () => {
             </ButtonContainer>
           )}
       </>
+      {isGenderModalVisible && <SelectGenderModal />}
     </Container>
   );
 };
