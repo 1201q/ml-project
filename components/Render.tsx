@@ -26,7 +26,7 @@ const Container = styled.div`
 
 const MobileContainer = styled.main`
   width: 100%;
-  max-width: 800px;
+  max-width: 780px;
   height: 100dvh;
   background-color: white;
   border-right: 1px solid lightgray;
@@ -34,7 +34,7 @@ const MobileContainer = styled.main`
   position: relative;
   overflow: hidden;
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 780px) {
     border: none;
   }
 `;

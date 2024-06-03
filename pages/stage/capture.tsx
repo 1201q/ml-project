@@ -1,11 +1,12 @@
 import Render from "@/components/Render";
-import CapturePage from "@/components/capture/index";
+
 import { isModelDownloadedAtom } from "@/context/atoms";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import * as faceapi from "face-api.js";
 import { GetServerSideProps, Redirect } from "next";
 import LoadingPage from "@/components/loading";
+import CameraPage from "@/components/detect/CameraPage";
 
 function Home() {
   const [isModelDownloaded, setIsModelDownloaded] = useAtom(
@@ -13,8 +14,8 @@ function Home() {
   );
   const init = async () => {
     await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
       faceapi.nets.ageGenderNet.loadFromUri("/models"),
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
       faceapi.nets.faceLandmark68TinyNet.loadFromUri("/models"),
     ])
       .then(() => {
@@ -34,7 +35,7 @@ function Home() {
   return (
     <>
       {isModelDownloaded ? (
-        <Render render={CapturePage} />
+        <Render render={CameraPage} />
       ) : (
         <Render render={LoadingPage} text="모델을 불러오고 있어요" />
       )}
