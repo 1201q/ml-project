@@ -172,6 +172,7 @@ const StoragePage = () => {
         <ImageContainer>
           {detectedImages.map((item, index) => (
             <ImageRowItem
+              key={`image-${index}`}
               onClick={() => {
                 setSelectImageIndex(index);
               }}
