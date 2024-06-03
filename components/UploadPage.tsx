@@ -1,10 +1,8 @@
 import styled from "styled-components";
-import Controller from "./Controller";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import useSize from "@/utils/useSize";
 import { motion } from "framer-motion";
-import Header from "../Header";
+import Header from "./Header";
 import { PuffLoader } from "react-spinners";
 import { detectedFaceImageAtom, uploadedImageAtom } from "@/context/atoms";
 import { useAtom } from "jotai";
@@ -12,8 +10,7 @@ import dataURLtoBlob from "@/utils/blob";
 import axios from "axios";
 import NextImage from "next/image";
 import Check from "@/public/check.svg";
-import nextURLPush from "@/utils/nextURLPush";
-import SelectGenderModal from "../modal/SelectGenderModal";
+import SelectGenderModal from "./SelectGenderModal";
 
 const StoragePage = () => {
   const router = useRouter();

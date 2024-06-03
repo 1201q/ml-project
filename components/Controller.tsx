@@ -1,10 +1,8 @@
 import { uploadedImageAtom } from "@/context/atoms";
-import { SetState } from "@/types/types";
 import nextURLPush from "@/utils/nextURLPush";
 import { motion } from "framer-motion";
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Controller = () => {

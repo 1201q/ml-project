@@ -1,5 +1,5 @@
 import Render from "@/components/Render";
-import ResultLoading from "@/components/loading/ResultLoading";
+import ResultLoading from "@/components/ResultLoading";
 
 const Post = () => {
   return <Render render={ResultLoading} />;

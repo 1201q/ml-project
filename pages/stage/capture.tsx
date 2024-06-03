@@ -4,9 +4,8 @@ import { isModelDownloadedAtom } from "@/context/atoms";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import * as faceapi from "face-api.js";
-import { GetServerSideProps, Redirect } from "next";
-import LoadingPage from "@/components/loading";
-import CameraPage from "@/components/detect/CameraPage";
+import ModelLoading from "@/components/ModelLoading";
+import CameraPage from "@/components/CameraPage";
 
 function Home() {
   const [isModelDownloaded, setIsModelDownloaded] = useAtom(
@@ -33,7 +32,7 @@ function Home() {
       {isModelDownloaded ? (
         <Render render={CameraPage} />
       ) : (
-        <Render render={LoadingPage} text="모델을 불러오고 있어요" />
+        <Render render={ModelLoading} text="모델을 불러오고 있어요" />
       )}
     </>
   );

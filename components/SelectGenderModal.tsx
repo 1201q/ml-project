@@ -68,8 +68,8 @@ const TopContainer = styled.div`
 `;
 
 const TitleText = styled.p`
-  font-size: 25px;
-  font-weight: 600;
+  font-size: 23px;
+  font-weight: 700;
 `;
 const ButtonContainer = styled.div`
   width: calc(100% - 40px);

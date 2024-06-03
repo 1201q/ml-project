@@ -1,7 +1,6 @@
 import { useRef, useEffect, RefObject } from "react";
 import * as faceapi from "face-api.js";
 import Webcam from "react-webcam";
-import { SetState } from "@/types/types";
 
 interface PropsType {
   webcamRef: RefObject<Webcam>;

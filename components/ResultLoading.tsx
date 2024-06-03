@@ -1,27 +1,14 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import Header from "../Header";
+import Header from "./Header";
 import { PuffLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import nextURLPush from "@/utils/nextURLPush";
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { useAtomValue } from "jotai";
-import {
-  capturedImageAtom,
-  detectedFaceDataAtom,
-  detectedFaceImageAtom,
-} from "@/context/atoms";
-
-const MODAL_X_PADDING = 66;
-const MODAL_Y_PADDING = 50;
+import { useEffect, useState } from "react";
 
 const ResultLoading = () => {
   const router = useRouter();
-  const capturedImageRef = useRef<HTMLImageElement>(null);
   const [isComplete, setIsComplete] = useState(false);
-  const capturedImage = useAtomValue(capturedImageAtom);
-  const imgData = useAtomValue(detectedFaceDataAtom);
 
   useEffect(() => {
     setTimeout(() => {

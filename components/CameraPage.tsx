@@ -4,12 +4,11 @@ import { useRef, useState } from "react";
 import Controller from "./Controller";
 import Camera from "./Camera";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import DetectedResult from "./DetectedResult";
 import DetectIndicator from "./DetectIndicator";
-import nextURLPush from "@/utils/nextURLPush";
 import { useRouter } from "next/router";
-import SelectGenderModal from "../modal/SelectGenderModal";
+import SelectGenderModal from "./SelectGenderModal";
 
 const CameraPage = () => {
   const router = useRouter();

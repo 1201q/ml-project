@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { PuffLoader } from "react-spinners";
 
-const LoadingPage = ({ text }: { text: string }) => {
+const ModelLoading = ({ text }: { text: string }) => {
   return (
     <Container>
       <LoadingContainer>
@@ -40,4 +40,4 @@ const Text = styled.p`
   margin-top: 40px;
 `;
 
-export default LoadingPage;
+export default ModelLoading;

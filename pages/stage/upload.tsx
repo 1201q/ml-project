@@ -1,7 +1,5 @@
 import Render from "@/components/Render";
-import UploadPage from "@/components/detect/UploadPage";
-
-import { GetServerSideProps, Redirect } from "next";
+import UploadPage from "@/components/UploadPage";
 import React from "react";
 
 function Home() {
