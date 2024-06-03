@@ -45,49 +45,6 @@ const UploadPage = () => {
   const [detectedFaceData, setDetectedFaceData] = useAtom(detectedFaceDataAtom);
   const [result, setResult] = useState<string[]>([]);
 
-  const detect = async () => {
-    const imageRef = uploadedImageRef.current;
-    const detecterRef = canvasRef.current;
-
-    if (imageRef && detecterRef) {
-      const displaySize = {
-        width: imageRef.clientWidth,
-        height: imageRef.clientHeight,
-      };
-
-      try {
-        const detections = await faceapi.detectAllFaces(
-          imageRef as faceapi.TNetInput,
-          new faceapi.TinyFaceDetectorOptions()
-        );
-
-        if (detections && detections.length > 1) {
-          setIsDetectedMultipleFace(true);
-        } else if (detections && detections.length === 1) {
-          const box = detections[0].box;
-          setDetectedFaceData(detections[0]);
-          getCroppedFace(box);
-          const resizedDetection: faceapi.FaceDetection = faceapi.resizeResults(
-            detections[0],
-            displaySize
-          );
-          const context = detecterRef.getContext("2d");
-          if (context) {
-            context.clearRect(0, 0, detecterRef.width, detecterRef.height);
-            const drawBox = new faceapi.draw.DrawBox(resizedDetection.box, {
-              lineWidth: 2,
-              boxColor: "blue",
-            });
-            drawBox.draw(detecterRef);
-            setIsDetectedFace(true);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   const getImageFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
 
@@ -107,28 +64,7 @@ const UploadPage = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      setUploadedImage(undefined);
-    }
-  };
-
-  const getCroppedFace = async (faceBox: faceapi.Box) => {
-    if (uploadedImage?.src) {
-      const img = await loadImage(uploadedImage?.src);
-      const { x, y, width, height } = faceBox;
-      const faceCanvas = canvas.createCanvas(width, height);
-      const ctx = faceCanvas.getContext("2d");
-      ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
-      const croppedImage = faceCanvas.toDataURL();
-
-      if (croppedImage) {
-        setDetectedFaceImage({
-          src: croppedImage,
-          width: width,
-          height: height,
-          x: x,
-          y: y,
-        });
-      }
+      setUploadedImage(null);
     }
   };
 
@@ -198,40 +134,7 @@ const UploadPage = () => {
         </ContentsContainer>
       )}
 
-      {/* {uploadedImage && (
-        <ContentsContainer ratio={uploadedImage?.width / uploadedImage?.height}>
-          <ImageContainer
-            initial={{ opacity: 0, y: 50, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            ratio={uploadedImage?.width / uploadedImage?.height}
-          >
-            <NextImage
-              ref={uploadedImageRef}
-              src={uploadedImage}
-              alt="uploadedImage"
-              fill={isTooBigImage}
-              style={{ borderRadius: "12px" }}
-              onLoad={() => {
-                const imageRef = uploadedImageRef.current;
-                const canvas = canvasRef.current;
-                if (canvas && imageRef) {
-                  canvas.width = imageRef.clientWidth;
-                  canvas.height = imageRef.clientHeight;
-                  detect();
-                }
-              }}
-            />
-            <canvas
-              ref={canvasRef}
-              style={{
-                position: "absolute",
-                zIndex: 10000,
-              }}
-            />
-          </ImageContainer>
-        </ContentsContainer>
-      )} */}
-      {!isDetectedFace && (
+      {/* {!isDetectedFace && (
         <BottomContainer
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -269,7 +172,7 @@ const UploadPage = () => {
             </Button>
           </ButtonContainer>
         </BottomContainer>
-      )}
+      )} */}
     </Container>
   );
 };

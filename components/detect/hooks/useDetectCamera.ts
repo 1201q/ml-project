@@ -48,12 +48,10 @@ const useDetectCamera = ({ webcamRef, canvasRef, isStop }: PropsType) => {
     const detecterRef = canvasRef.current;
 
     if (videoRef && detecterRef) {
-      const detectionPromise: any = faceapi
-        .detectSingleFace(
-          videoRef as faceapi.TNetInput,
-          new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.45 })
-        )
-        .withFaceLandmarks(true);
+      const detectionPromise: any = faceapi.detectSingleFace(
+        videoRef as faceapi.TNetInput,
+        new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.45 })
+      );
 
       const displaySize = {
         width: videoRef.clientWidth,
@@ -63,8 +61,7 @@ const useDetectCamera = ({ webcamRef, canvasRef, isStop }: PropsType) => {
       detectionPromise
         .then(async (detections: any) => {
           if (detections) {
-            const box = detections?.detection.box;
-            const detection = detections?.detection;
+            const box = detections?.box;
 
             if (
               box &&
@@ -74,7 +71,7 @@ const useDetectCamera = ({ webcamRef, canvasRef, isStop }: PropsType) => {
               box.height !== null
             ) {
               const resizedDetection: faceapi.FaceDetection =
-                faceapi.resizeResults(detection, displaySize);
+                faceapi.resizeResults(detections, displaySize);
 
               const context = detecterRef.getContext("2d");
               if (context) {

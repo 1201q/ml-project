@@ -1,45 +1,52 @@
+import { uploadedImageAtom } from "@/context/atoms";
 import { SetState } from "@/types/types";
 import nextURLPush from "@/utils/nextURLPush";
 import { motion } from "framer-motion";
+import { useSetAtom } from "jotai";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-type MenuType = {
-  menu: string;
-  select: boolean;
-};
+const Controller = () => {
+  const router = useRouter();
+  const setUploadedImage = useSetAtom(uploadedImageAtom);
 
-interface PropsType {
-  menu: MenuType[];
-  setMenu: SetState<MenuType[]>;
-}
+  const getImageFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
 
-const Controller: React.FC<PropsType> = ({ menu, setMenu }) => {
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const image = new Image();
+        const url = e.target?.result as string;
+        image.onload = () => {
+          setUploadedImage({
+            src: url,
+            width: image.width,
+            height: image.height,
+            blob: file,
+          });
+          nextURLPush(router, "/stage/upload");
+        };
+        image.src = url;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setUploadedImage(null);
+    }
+  };
+
   return (
     <Container>
-      <CenterMenu></CenterMenu>
-      <ControllerBtnContainer
-        initial={{ x: menu[0].select ? 41 : -41 }}
-        animate={{ x: menu[0].select ? 41 : -41 }}
-        transition={{
-          duration: 0.15,
-        }}
-      >
-        {menu.map((item, index) => (
-          <Menu
-            key={item.menu}
-            onClick={() => {
-              setMenu((prev) => {
-                const updatedMenu = prev.map((item, mindex) => {
-                  return { ...item, select: mindex === index };
-                });
-                return updatedMenu;
-              });
-            }}
-            $isselect={item.select}
-          >
-            {item.menu}
-          </Menu>
-        ))}
+      <ControllerBtnContainer>
+        <StorageBtn
+          whileTap={{ scale: 0.95, backgroundColor: "#8080807e" }}
+          whileHover={{ backgroundColor: "#8080807e" }}
+          htmlFor="file"
+        >
+          기존 이미지를 가져올게요
+        </StorageBtn>
+        <Input id="file" type="file" accept="image/*" onChange={getImageFile} />
       </ControllerBtnContainer>
     </Container>
   );
@@ -58,26 +65,18 @@ const ControllerBtnContainer = styled(motion.button)`
   height: 32px;
   gap: 10px;
 `;
-
-const Menu = styled(motion.label)<{ $isselect: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: ${(props) => (props.$isselect ? "white" : "gray")};
-  min-width: 72px;
-  height: 32px;
-  border-radius: 16px;
+const StorageBtn = styled(motion.label)`
+  font-size: 15px;
+  color: #808080;
+  z-index: 100;
+  padding: 7px 12px;
+  border-radius: 10px;
+  margin-top: 17px;
   cursor: pointer;
 `;
 
-const CenterMenu = styled.div`
-  background-color: #333333;
-  height: 32px;
-  min-width: 72px;
-  border-radius: 16px;
-  position: absolute;
-  top: 20px;
+const Input = styled.input`
+  display: none;
 `;
 
 export default Controller;

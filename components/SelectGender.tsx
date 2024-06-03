@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import Header from "../Header";
+import Header from "./Header";
 import { useAtomValue } from "jotai";
-import { detectedFaceDataAtom, detectedFaceImageAtom } from "@/context/atoms";
+import { detectedFaceImageAtom } from "@/context/atoms";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import nextURLPush from "@/utils/nextURLPush";
@@ -35,8 +35,6 @@ const SelectGenderPage = () => {
               width={face.width}
               height={face.height}
               style={{
-                maxWidth: "150px",
-                maxHeight: "150px",
                 objectFit: "cover",
               }}
             />

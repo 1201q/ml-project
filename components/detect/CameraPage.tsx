@@ -7,14 +7,13 @@ import Camera from "./Camera";
 import { AnimatePresence, motion } from "framer-motion";
 import DetectedResult from "./DetectedResult";
 import DetectIndicator from "./DetectIndicator";
+import nextURLPush from "@/utils/nextURLPush";
+import { useRouter } from "next/router";
 
 const CameraPage = () => {
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const { isResizing, size } = useSize(containerRef);
-  const [menu, setMenu] = useState([
-    { menu: "카메라", select: true },
-    { menu: "저장소", select: false },
-  ]);
 
   const [isResultVisible, setIsResultVisible] = useState(false);
   const [isFaceDetected, setIsFaceDetected] = useState(false);
@@ -34,6 +33,7 @@ const CameraPage = () => {
             setIsServerFaceDetected={setIsServerFaceDetected}
           />
         )}
+
         {isResultVisible && !isServerFaceDetected && <IsNotDetectedContainer />}
         {isResultVisible && (
           <DetectIndicator
@@ -42,54 +42,59 @@ const CameraPage = () => {
           />
         )}
       </CameraContainer>
-      {!isResultVisible && <Controller menu={menu} setMenu={setMenu} />}
-      {isResultVisible &&
-        isServerFaceDetected !== "loading" &&
-        isFaceDetected &&
-        isServerFaceDetected && (
-          <ButtonContainer
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-          >
-            <Button
-              onClick={() => {
-                setIsResultVisible(false);
-              }}
-              bg={"#f2f4f6"}
-              font={"gray"}
-              whileTap={{ scale: 0.97 }}
+      {!isResultVisible && <Controller />}
+      <>
+        {isResultVisible &&
+          isServerFaceDetected !== "loading" &&
+          isFaceDetected &&
+          isServerFaceDetected && (
+            <ButtonContainer
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
             >
-              다시 찍을게요
-            </Button>
-            <Button
-              bg={"rgb(49, 130, 246)"}
-              font={"white"}
-              whileTap={{ scale: 0.97 }}
-              whileHover={{ filter: "brightness(0.8)" }}
+              <Button
+                onClick={() => {
+                  setIsResultVisible(false);
+                }}
+                bg={"#f2f4f6"}
+                font={"gray"}
+                whileTap={{ scale: 0.97 }}
+              >
+                다시 찍을게요
+              </Button>
+              <Button
+                bg={"rgb(49, 130, 246)"}
+                font={"white"}
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ filter: "brightness(0.8)" }}
+                onClick={() => {
+                  nextURLPush(router, "/stage/gender");
+                }}
+              >
+                이 얼굴로 할게요
+              </Button>
+            </ButtonContainer>
+          )}
+        {isResultVisible &&
+          isServerFaceDetected !== "loading" &&
+          (!isFaceDetected || !isServerFaceDetected) && (
+            <ButtonContainer
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
             >
-              이 얼굴로 할게요
-            </Button>
-          </ButtonContainer>
-        )}
-      {isResultVisible &&
-        isServerFaceDetected !== "loading" &&
-        (!isFaceDetected || !isServerFaceDetected) && (
-          <ButtonContainer
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-          >
-            <Button
-              onClick={() => {
-                setIsResultVisible(false);
-              }}
-              bg={"#f2f4f6"}
-              font={"gray"}
-              whileTap={{ scale: 0.97 }}
-            >
-              다시 찍어주세요
-            </Button>
-          </ButtonContainer>
-        )}
+              <Button
+                onClick={() => {
+                  setIsResultVisible(false);
+                }}
+                bg={"#f2f4f6"}
+                font={"gray"}
+                whileTap={{ scale: 0.97 }}
+              >
+                다시 찍어주세요
+              </Button>
+            </ButtonContainer>
+          )}
+      </>
     </Container>
   );
 };

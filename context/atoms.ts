@@ -21,6 +21,9 @@ export const detectedFaceImageAtom = atom<
 >(undefined);
 export const detectedFaceDataAtom = atom<any | undefined>(undefined);
 
-export const uploadedImageAtom = atom<
-  { src: string; width: number; height: number; blob?: Blob } | undefined
->(undefined);
+export const uploadedImageAtom = atom<{
+  src: string;
+  width: number;
+  height: number;
+  blob?: Blob;
+} | null>(null);

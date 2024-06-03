@@ -98,15 +98,6 @@ const ContentsContainer = styled.div`
   height: calc(100% - 60px);
 `;
 
-const ImageContainer = styled.div<{ width: number; height: number }>`
-  display: flex;
-  justify-content: center;
-  position: relative;
-  margin: 30px 0px 0px 0px;
-  width: ${(props) => `${props.width}px`};
-  height: ${(props) => `${props.height}px`};
-`;
-
 const TitleText = styled(motion.p)`
   font-size: 28px;
   font-weight: 700;

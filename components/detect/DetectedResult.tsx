@@ -1,8 +1,4 @@
-import {
-  capturedImageAtom,
-  detectedFaceDataAtom,
-  detectedFaceImageAtom,
-} from "@/context/atoms";
+import { capturedImageAtom, detectedFaceImageAtom } from "@/context/atoms";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { loadImage } from "canvas";
@@ -40,12 +36,10 @@ const DetectedResult: React.FC<PropsType> = ({
     const canvas = canvasRef.current;
 
     if (img && canvas) {
-      const detectionPromise: any = faceapi
-        .detectSingleFace(
-          img as faceapi.TNetInput,
-          new faceapi.TinyFaceDetectorOptions()
-        )
-        .withFaceLandmarks(true);
+      const detectionPromise: any = faceapi.detectSingleFace(
+        img as faceapi.TNetInput,
+        new faceapi.TinyFaceDetectorOptions()
+      );
 
       const displaySize = {
         width: img.clientWidth,
@@ -54,8 +48,8 @@ const DetectedResult: React.FC<PropsType> = ({
 
       detectionPromise
         .then(async (detections: any) => {
-          if (detections && detections.detection) {
-            const box = detections?.detection.box;
+          if (detections) {
+            const box = detections?.box;
             const blob = await getCroppedFace(box);
 
             if (blob) {
@@ -70,7 +64,7 @@ const DetectedResult: React.FC<PropsType> = ({
               box.height !== null
             ) {
               const resizedDetections = faceapi.resizeResults(
-                detections.detection,
+                detections,
                 displaySize
               );
 
@@ -113,10 +107,10 @@ const DetectedResult: React.FC<PropsType> = ({
 
       let { x, y, width, height } = faceBox;
 
-      x = x - 10;
-      y = y - 10;
-      width = width + 20;
-      height = height + 20;
+      x = x - 5;
+      y = y - 5;
+      width = width + 10;
+      height = height + 10;
 
       const faceCanvas = canvas.createCanvas(width, height);
       const ctx = faceCanvas.getContext("2d");
