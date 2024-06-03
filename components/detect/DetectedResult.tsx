@@ -8,11 +8,9 @@ import { useAtom } from "jotai";
 import { loadImage } from "canvas";
 import * as canvas from "canvas";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import * as faceapi from "face-api.js";
-import nextURLPush from "@/utils/nextURLPush";
-import { useRouter } from "next/router";
 import dataURLtoBlob from "@/utils/blob";
 import axios from "axios";
 import { SetState } from "@/types/types";
@@ -28,11 +26,9 @@ const DetectedResult: React.FC<PropsType> = ({
 }) => {
   const capturedImageRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
+  const [capturedImage] = useAtom(capturedImageAtom);
 
-  const [detectedFaceImage, setDetectedFaceImage] = useAtom(
-    detectedFaceImageAtom
-  );
+  const [, setDetectedFaceImage] = useAtom(detectedFaceImageAtom);
 
   const [canvasSize, setCanvasSize] = useState<{
     width: number;
@@ -84,7 +80,7 @@ const DetectedResult: React.FC<PropsType> = ({
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 const drawBox = new faceapi.draw.DrawBox(
                   resizedDetections.box,
-                  { lineWidth: 3 }
+                  { lineWidth: 1, boxColor: "white" }
                 );
                 drawBox.draw(canvas);
 
@@ -115,13 +111,19 @@ const DetectedResult: React.FC<PropsType> = ({
     if (capturedImage?.src) {
       const img = await loadImage(capturedImage?.src);
 
-      const { x, y, width, height } = faceBox;
+      let { x, y, width, height } = faceBox;
+
+      x = x - 10;
+      y = y - 10;
+      width = width + 20;
+      height = height + 20;
+
       const faceCanvas = canvas.createCanvas(width, height);
       const ctx = faceCanvas.getContext("2d");
       ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
 
       const croppedImage = faceCanvas.toDataURL();
-      console.log(croppedImage);
+
       const blob = dataURLtoBlob(croppedImage);
 
       if (croppedImage && blob) {
@@ -178,8 +180,7 @@ const DetectedResult: React.FC<PropsType> = ({
       {capturedImage && (
         <ImageContainer
           layoutId="camera"
-          exit={{ y: 400, opacity: 0 }}
-          transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1.0] }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1.0] }}
           ratio={capturedImage.width / capturedImage.height}
         >
           <Image

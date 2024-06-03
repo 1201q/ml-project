@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import useSize from "@/utils/useSize";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Controller from "./Controller";
 import Camera from "./Camera";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import DetectedResult from "./DetectedResult";
+import DetectIndicator from "./DetectIndicator";
 
 const CameraPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,8 +34,12 @@ const CameraPage = () => {
             setIsServerFaceDetected={setIsServerFaceDetected}
           />
         )}
-        {isResultVisible && !isServerFaceDetected && (
-          <IsNotDetectedContainer></IsNotDetectedContainer>
+        {isResultVisible && !isServerFaceDetected && <IsNotDetectedContainer />}
+        {isResultVisible && (
+          <DetectIndicator
+            isFaceDetected={isFaceDetected}
+            isServerFaceDetected={isServerFaceDetected}
+          />
         )}
       </CameraContainer>
       {!isResultVisible && <Controller menu={menu} setMenu={setMenu} />}
