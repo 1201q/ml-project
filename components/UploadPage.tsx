@@ -89,6 +89,7 @@ const StoragePage = () => {
   const pushNextStage = () => {
     if (typeof selectImageIndex === "number") {
       setIsGenderModalVisible(true);
+      setDetectedFaceImage({ src: detectedImages[selectImageIndex] });
     } else {
       setIsNotSelectImage(true);
 

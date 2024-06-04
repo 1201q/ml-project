@@ -1,5 +1,6 @@
 import nextURLPush from "@/utils/nextURLPush";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
@@ -9,28 +10,38 @@ const SelectGenderModal = () => {
     <Container>
       <ModalContainer initial={{ y: 100 }} animate={{ y: 0 }}>
         <TopContainer>
-          <TitleText>남자이신가요? 여자이신가요?</TitleText>
+          <TitleText>성별을 선택해주세요</TitleText>
         </TopContainer>
         <ButtonContainer>
           <Button
-            bg={"rgb(49, 130, 246)"}
-            font={"white"}
-            whileHover={{ filter: "brightness(0.8)" }}
-            whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
-            onClick={() => {
-              nextURLPush(router, "/stage/post");
-            }}
+            bg={"#e8f3ff"}
+            font={"#3182f6"}
+            whileTap={{ scale: 0.97 }}
+            onClick={() =>
+              router.push(
+                {
+                  pathname: "/stage/post",
+                  query: { access: true, gender: "male" },
+                },
+                "/stage/post"
+              )
+            }
           >
             남자에요
           </Button>
           <Button
-            bg={"#ff779b"}
-            font={"white"}
-            whileHover={{ filter: "brightness(0.8)" }}
-            whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
-            onClick={() => {
-              nextURLPush(router, "/stage/post");
-            }}
+            bg={"#fee"}
+            font={"#f04452"}
+            whileTap={{ scale: 0.97 }}
+            onClick={() =>
+              router.push(
+                {
+                  pathname: "/stage/post",
+                  query: { access: true, gender: "female" },
+                },
+                "/stage/post"
+              )
+            }
           >
             여자에요
           </Button>
@@ -64,25 +75,24 @@ const ModalContainer = styled(motion.div)`
 `;
 
 const TopContainer = styled.div`
-  padding: 30px 21px;
+  padding: 30px 21px 25px 21px;
 `;
 
 const TitleText = styled.p`
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 700;
 `;
 const ButtonContainer = styled.div`
   width: calc(100% - 40px);
-
   margin: 0px 20px 20px 20px;
   display: flex;
-  gap: 15px;
+  gap: 10px;
   background-color: white;
 `;
 const Button = styled(motion.button)<{ bg: string; font: string }>`
   width: 100%;
   height: 55px;
-  border-radius: 15px;
+  border-radius: 12px;
   background-color: ${(props) => props.bg};
   color: ${(props) => props.font};
   font-size: 17px;

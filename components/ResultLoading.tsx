@@ -5,16 +5,51 @@ import { PuffLoader } from "react-spinners";
 import { useRouter } from "next/router";
 import nextURLPush from "@/utils/nextURLPush";
 import { useEffect, useState } from "react";
+import { useAtom, useSetAtom } from "jotai";
+import { detectedFaceImageAtom, predictDataAtom } from "@/context/atoms";
+import dataURLtoBlob from "@/utils/blob";
+import axios from "axios";
 
-const ResultLoading = () => {
+const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
   const router = useRouter();
   const [isComplete, setIsComplete] = useState(false);
+  const [detectedFaceImage] = useAtom(detectedFaceImageAtom);
+  const [, setPredictData] = useAtom(predictDataAtom);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsComplete(true);
-    }, 2000);
+    getPredictData(gender);
   }, []);
+
+  const getPredictData = async (gender: "female" | "male") => {
+    let url =
+      `${process.env.NEXT_PUBLIC_GCP_API_URL}/predict/${gender}` as string;
+    const formData = new FormData();
+
+    if (detectedFaceImage?.blob) {
+      formData.append("file", detectedFaceImage?.blob);
+    } else if (detectedFaceImage?.src) {
+      const blob = dataURLtoBlob(detectedFaceImage?.src);
+      formData.append("file", blob);
+    }
+
+    axios
+      .post(url, formData)
+      .then((res) => {
+        if (res.data.predictions) {
+          const data = res.data.predictions;
+
+          setPredictData({ gender: gender, rank: data });
+          setIsComplete(true);
+        } else {
+          setIsComplete(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsComplete(false);
+      });
+  };
+
   return (
     <Container>
       <Header />

@@ -20,3 +20,5 @@ export const detectedFaceImageAtom = atom<{
   y?: number;
   blob?: Blob;
 } | null>(null);
+
+export const predictDataAtom = atom<any>(null);
