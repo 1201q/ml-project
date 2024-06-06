@@ -13,6 +13,7 @@ import axios from "axios";
 const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
   const router = useRouter();
   const [isComplete, setIsComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [detectedFaceImage] = useAtom(detectedFaceImageAtom);
   const [, setPredictData] = useAtom(predictDataAtom);
 
@@ -43,10 +44,12 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
         } else {
           setIsComplete(false);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
         setIsComplete(false);
+        setIsLoading(false);
       });
   };
 
@@ -54,7 +57,7 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
     <Container>
       <Header />
       <ContentsContainer>
-        {!isComplete ? (
+        {isLoading && !isComplete && (
           <TitleContainer
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -63,7 +66,8 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
             <TitleText>예측 결과를</TitleText>
             <TitleText>가져오고 있어요</TitleText>
           </TitleContainer>
-        ) : (
+        )}
+        {!isLoading && isComplete && (
           <TitleContainer
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -73,8 +77,18 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
             <SmallText>지금 보러 가보세요!</SmallText>
           </TitleContainer>
         )}
+        {!isLoading && !isComplete && (
+          <TitleContainer
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            <TitleText>분석하는데 실패했어요</TitleText>
+            <SmallText>다시 시도해주세요</SmallText>
+          </TitleContainer>
+        )}
 
-        {!isComplete && (
+        {isLoading && !isComplete && (
           <LoadingContainer>
             <PuffLoader
               loading={true}
@@ -85,14 +99,15 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
           </LoadingContainer>
         )}
       </ContentsContainer>
-      {isComplete && (
+      {!isLoading && isComplete && (
         <ButtonContainer
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
         >
           <Button
             onClick={() => {
-              nextURLPush(router, "/stage/result");
+              nextURLPush(router, "/stage/result", true);
             }}
             bg={"rgb(49, 130, 246)"}
             font={"white"}
@@ -100,6 +115,25 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
             whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
           >
             결과 보러가기
+          </Button>
+        </ButtonContainer>
+      )}
+      {!isLoading && !isComplete && (
+        <ButtonContainer
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Button
+            onClick={() => {
+              router.replace("/stage/capture");
+            }}
+            bg={"rgb(49, 130, 246)"}
+            font={"white"}
+            whileHover={{ filter: "brightness(0.8)" }}
+            whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
+          >
+            다시 하기
           </Button>
         </ButtonContainer>
       )}

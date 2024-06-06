@@ -18,7 +18,7 @@ const SelectGenderModal = () => {
             font={"#3182f6"}
             whileTap={{ scale: 0.97 }}
             onClick={() =>
-              router.push(
+              router.replace(
                 {
                   pathname: "/stage/post",
                   query: { access: true, gender: "male" },
@@ -34,7 +34,7 @@ const SelectGenderModal = () => {
             font={"#f04452"}
             whileTap={{ scale: 0.97 }}
             onClick={() =>
-              router.push(
+              router.replace(
                 {
                   pathname: "/stage/post",
                   query: { access: true, gender: "female" },

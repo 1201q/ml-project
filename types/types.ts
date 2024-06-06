@@ -14,3 +14,14 @@ export interface DetectBoxDataType {
 
 export type StageType = "select" | "capture" | "import";
 export type SetState<T> = Dispatch<SetStateAction<T>>;
+
+export interface PredictDataType {
+  rank: PredictionsType[];
+  gender: "male" | "female";
+}
+
+export interface PredictionsType {
+  rank: number;
+  name: string;
+  probability: number;
+}

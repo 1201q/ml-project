@@ -168,7 +168,11 @@ const StoragePage = () => {
             </LoadingContainer>
           )}
         </>
-        <ImageContainer>
+        <ImageContainer
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
           {detectedImages.map((item, index) => (
             <ImageRowItem
               key={`image-${index}`}
@@ -210,7 +214,11 @@ const StoragePage = () => {
           </SelectPlzPopup>
         )}
         {!isLoading && (
-          <ButtonContainer>
+          <ButtonContainer
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             <Button
               bg={"#f2f4f6"}
               font={"gray"}
@@ -278,7 +286,7 @@ const LoadingContainer = styled.div`
   margin-right: 12px;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled(motion.div)`
   display: grid;
   max-height: calc(100% - 100px);
   grid-template-columns: 1fr 1fr;
@@ -322,7 +330,7 @@ const CheckButton = styled.button<{ $ischeck: boolean }>`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled(motion.div)`
   width: calc(100% - 40px);
   position: absolute;
   display: flex;

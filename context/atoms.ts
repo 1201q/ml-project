@@ -1,3 +1,4 @@
+import { PredictDataType } from "@/types/types";
 import { atom } from "jotai";
 
 export const isModelDownloadedAtom = atom(false);
@@ -21,4 +22,4 @@ export const detectedFaceImageAtom = atom<{
   blob?: Blob;
 } | null>(null);
 
-export const predictDataAtom = atom<any>(null);
+export const predictDataAtom = atom<PredictDataType | null>(null);

@@ -29,6 +29,7 @@ const Container = styled.header`
   padding: 0px 20px;
   justify-content: space-between;
   position: relative;
+  background: none;
 `;
 
 const RightContainer = styled.div``;

@@ -14,7 +14,7 @@ const LandingPage = () => {
       <MiddleContainer>
         <TextContainer>
           <BigText>딥러닝 학습 모델을 이용해</BigText>
-          <BigText>당신의 얼굴을 평가해드릴게요</BigText>
+          <BigText>연예인 닮은 꼴을 분석해드릴게요</BigText>
         </TextContainer>
         <SmallText>이 프로젝트는 머신러닝 프로젝트의</SmallText>
         <SmallText>학습을 위해 제작되었어요.</SmallText>
