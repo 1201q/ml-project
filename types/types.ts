@@ -25,3 +25,7 @@ export interface PredictionsType {
   name: string;
   probability: number;
 }
+
+export interface ExtendedPredictDataType extends PredictDataType {
+  name: string;
+}

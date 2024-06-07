@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import styled from "styled-components";
 
 interface PropsType {
@@ -26,7 +27,7 @@ const ResultPagePercentBar: React.FC<PropsType> = ({ rank, name, percent }) => {
   );
 };
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   display: flex;
   height: 25px;
 `;
@@ -51,7 +52,7 @@ const BarContainer = styled.div`
 const Name = styled.p`
   height: 100%;
   position: absolute;
-  left: 3px;
+  left: 5px;
   display: flex;
   align-items: center;
   font-size: 14px;
@@ -66,10 +67,10 @@ const Percent = styled.p<{ weight: number }>`
   right: 0;
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: ${(props) => props.weight};
   z-index: 2;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.7px;
 `;
 const Bar = styled.div<{ width: number; opacity: number }>`
   width: ${(props) => `${props.width}%`};
@@ -79,8 +80,8 @@ const Bar = styled.div<{ width: number; opacity: number }>`
   z-index: 1;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 `;
 
 export default ResultPagePercentBar;

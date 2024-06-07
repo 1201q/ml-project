@@ -1,11 +1,13 @@
 import { predictDataAtom } from "@/context/atoms";
-import { motion, useAnimation, useInView } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import styled from "styled-components";
 import Header from "./Header";
 import ResultPageCard from "./ResultPageCard";
 import ResultPagePercentBar from "./ResultPagePercentBar";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/router";
+import ShareModal from "./ShareModal";
 
 const reveal = {
   hidden: { opacity: 0, y: 70 },
@@ -21,15 +23,23 @@ const reveal = {
   },
 };
 
-const ResultPage = () => {
+interface PropsType {
+  isSharePage: boolean;
+  name: string | null;
+}
+
+const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
   const [predictData] = useAtom(predictDataAtom);
   const containerRef = useRef(null);
+  const router = useRouter();
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
   return (
     <Container>
       <Header currentMenu="결과" />
       <ContentsContainer ref={containerRef}>
         <TitleContainer variants={reveal} initial="hidden" animate="visible">
+          {isSharePage && <TitleText>{name}님과</TitleText>}
           <TitleText>가장 닮은 연예인은</TitleText>
           <TitleText>{predictData?.rank[0].name}입니다</TitleText>
         </TitleContainer>
@@ -115,7 +125,62 @@ const ResultPage = () => {
             />
           ))}
         </ChartContainer>
+
+        {!isSharePage ? (
+          <ButtonContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true }}
+          >
+            <Button
+              onClick={() => {
+                router.replace("/stage/capture");
+              }}
+              bg={"#f2f4f6"}
+              font={"gray"}
+              whileTap={{ scale: 0.97 }}
+            >
+              다시 하기
+            </Button>
+            <Button
+              onClick={() => {
+                setIsShareModalVisible(true);
+              }}
+              bg={"rgb(49, 130, 246)"}
+              font={"white"}
+              whileHover={{ filter: "brightness(0.8)" }}
+              whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
+            >
+              친구에게 공유하기
+            </Button>
+          </ButtonContainer>
+        ) : (
+          <ButtonContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true }}
+          >
+            <Button
+              onClick={() => {
+                router.push("/stage/capture");
+              }}
+              bg={"rgb(49, 130, 246)"}
+              font={"white"}
+              whileHover={{ filter: "brightness(0.8)" }}
+              whileTap={{ scale: 0.97, filter: "brightness(0.8)" }}
+            >
+              나도 해보기
+            </Button>
+          </ButtonContainer>
+        )}
       </ContentsContainer>
+      <AnimatePresence>
+        {isShareModalVisible && (
+          <ShareModal setIsShareModalVisible={setIsShareModalVisible} />
+        )}
+      </AnimatePresence>
     </Container>
   );
 };
@@ -126,12 +191,20 @@ const Container = styled(motion.div)`
   flex-direction: column;
   position: relative;
   background: linear-gradient(rgba(49, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 60%);
+  overflow-y: hidden;
 `;
 
 const ContentsContainer = styled.div`
   padding: 0px 20px;
   height: calc(100% - 60px);
   overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 const TitleText = styled(motion.p)`
   font-size: 28px;
@@ -148,7 +221,7 @@ const TitleContainer = styled(motion.div)`
 
 const ItemContainer = styled(motion.div)`
   min-height: calc(100% - 150px);
-  overflow-y: scroll;
+
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -180,6 +253,25 @@ const ChartContainer = styled(motion.div)`
   flex-direction: column;
   gap: 5px;
   margin-bottom: 80px;
+`;
+
+const ButtonContainer = styled(motion.div)`
+  width: calc(100%);
+  margin-bottom: 20px;
+  display: flex;
+
+  background: none;
+  gap: 15px;
+`;
+const Button = styled(motion.button)<{ bg: string; font: string }>`
+  width: 100%;
+  height: 55px;
+  border-radius: 15px;
+  background-color: ${(props) => props.bg};
+  color: ${(props) => props.font};
+  font-size: 17px;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export default ResultPage;
