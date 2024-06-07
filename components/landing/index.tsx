@@ -72,7 +72,8 @@ const BigText = styled.p`
   color: black;
 
   @media screen and (max-width: 450px) {
-    font-size: 28px;
+    font-size: 27px;
+    letter-spacing: -0.2px;
   }
 `;
 
@@ -115,6 +116,7 @@ const BottomSmallText = styled.p`
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.5px;
+  line-height: 120%;
   color: gray;
   text-align: center;
   padding: 0px 20px;

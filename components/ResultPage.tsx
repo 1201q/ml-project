@@ -128,9 +128,8 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
 
         {!isSharePage ? (
           <ButtonContainer
-            variants={reveal}
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ root: containerRef, once: true }}
           >
             <Button
@@ -141,7 +140,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
               font={"gray"}
               whileTap={{ scale: 0.97 }}
             >
-              다시 하기
+              다시 할래요
             </Button>
             <Button
               onClick={() => {
@@ -157,9 +156,8 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
           </ButtonContainer>
         ) : (
           <ButtonContainer
-            variants={reveal}
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ root: containerRef, once: true }}
           >
             <Button

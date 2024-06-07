@@ -1,6 +1,6 @@
 import { SetState } from "@/types/types";
 import { motion } from "framer-motion";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useOutSideClick from "./hooks/useOutSideClick";
 import { useAtom } from "jotai";
@@ -26,7 +26,7 @@ const ShareModal = ({
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (name.length > 2 && predictData) {
+    if (name.length >= 2 && predictData) {
       const data = {
         ...predictData,
         name: name,
@@ -52,6 +52,28 @@ const ShareModal = ({
   useOutSideClick([modalRef], () => {
     setIsShareModalVisible(false);
   });
+
+  useEffect(() => {
+    return () => {
+      setDbId(null);
+    };
+  }, []);
+
+  const onCopy = () => {
+    const origin = window.location.origin;
+    navigator.clipboard
+      .writeText(`${origin}/predict/${dbid}`)
+      .then(() => alert("URL이 복사됐어요."))
+      .catch((err) => console.error("URL 복사 실패:", err));
+  };
+
+  const onShare = () => {
+    const origin = window.location.origin;
+    navigator.share({
+      title: `${name}의 연예인 얼굴 분석!`,
+      url: `${origin}/predict/${dbid}`,
+    });
+  };
 
   return (
     <Container>
@@ -114,16 +136,18 @@ const ShareModal = ({
                 <ContentsButton
                   whileTap={{ scale: 0.97 }}
                   type="button"
-                  onClick={() => {
-                    console.log(router);
-                  }}
+                  onClick={onCopy}
                 >
                   복사하기
                 </ContentsButton>
               </LinkRow>
               <LinkRow>
                 <p>SNS로 공유하기</p>
-                <ContentsButton whileTap={{ scale: 0.97 }} type="button">
+                <ContentsButton
+                  onClick={onShare}
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                >
                   공유하기
                 </ContentsButton>
               </LinkRow>
