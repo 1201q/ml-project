@@ -21,6 +21,9 @@ const ResultPageCard: React.FC<PropsType> = ({
         alt={name}
         fill
         style={{ objectFit: fit, zIndex: 2 }}
+        placeholder="blur"
+        priority={true}
+        sizes="50vw"
       />
       {fit === "contain" && (
         <Image
@@ -28,6 +31,10 @@ const ResultPageCard: React.FC<PropsType> = ({
           alt={name}
           fill
           style={{ objectFit: "cover", opacity: 0.3 }}
+          placeholder="blur"
+          priority={false}
+          quality={50}
+          sizes="33vw"
         />
       )}
       <NameContainer>

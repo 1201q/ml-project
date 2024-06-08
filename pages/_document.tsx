@@ -39,17 +39,11 @@ export default class MyDocument extends Document {
     return (
       <Html lang="ko">
         <Head>
-          {/* <link
-            rel="stylesheet"
-            as="style"
-            crossOrigin="anonymous"
-            href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-          /> */}
           <link
             rel="stylesheet"
-            as="style"
+            as="font"
             crossOrigin="anonymous"
-            href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/variable/pretendardvariable.min.css"
+            href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
           />
         </Head>
         <body>

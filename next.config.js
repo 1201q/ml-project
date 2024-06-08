@@ -8,11 +8,16 @@ module.exports = {
       { source: "/stage/upload", destination: "/", permanent: false },
     ];
   },
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
+
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"],
     });
+
     return config;
   },
 };

@@ -37,6 +37,7 @@ const Slider = () => {
             size={220}
             color={color[index % 5]}
             image={d}
+            index={index}
           />
         ))}
       </Line>
@@ -47,6 +48,7 @@ const Slider = () => {
             size={220}
             color={color[index % 5]}
             image={d}
+            index={index}
           />
         ))}
       </SecondLine>
