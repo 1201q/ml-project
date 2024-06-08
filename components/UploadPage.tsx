@@ -11,6 +11,7 @@ import axios from "axios";
 import NextImage from "next/image";
 import Check from "@/public/check.svg";
 import SelectGenderModal from "./SelectGenderModal";
+import React from "react";
 
 const StoragePage = () => {
   const router = useRouter();
@@ -363,4 +364,4 @@ const SelectPlzPopup = styled(motion.div)`
   color: rgb(240, 68, 82);
 `;
 
-export default StoragePage;
+export default React.memo(StoragePage);

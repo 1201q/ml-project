@@ -8,6 +8,7 @@ import { dbService } from "@/utils/firebase";
 import { addDoc, collection, doc } from "firebase/firestore";
 import { PuffLoader } from "react-spinners";
 import { useRouter } from "next/router";
+import React from "react";
 
 const ShareModal = () => {
   const router = useRouter();
@@ -271,4 +272,4 @@ const ContentsButton = styled(motion.button)`
   padding: 5px 10px;
 `;
 
-export default ShareModal;
+export default React.memo(ShareModal);

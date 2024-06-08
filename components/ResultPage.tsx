@@ -7,7 +7,9 @@ import ResultPageCard from "./ResultPageCard";
 import ResultPagePercentBar from "./ResultPagePercentBar";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import ShareModal from "./ShareModal";
+import React from "react";
+import dynamic from "next/dynamic";
+const ShareModal = dynamic(() => import("@/components/ShareModal"));
 
 const reveal = {
   hidden: { opacity: 0, y: 70 },
@@ -64,6 +66,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
                 name={predictData?.rank[0].name}
                 percent={predictData?.rank[0].probability}
                 fit={"contain"}
+                priority={true}
               />
             </ItemTopContainer>
             <ItemGridContainer
@@ -78,6 +81,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
                   rank={item.rank}
                   name={item.name}
                   percent={item.probability}
+                  priority={index < 3 ? true : false}
                 />
               ))}
             </ItemGridContainer>
@@ -106,6 +110,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
                 name={predictData?.rank?.slice(-1)[0].name}
                 percent={predictData?.rank?.slice(-1)[0].probability}
                 fit="contain"
+                priority={false}
               />
             </ItemTopContainer>
           </motion.div>

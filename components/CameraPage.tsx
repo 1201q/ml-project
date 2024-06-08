@@ -7,11 +7,10 @@ import Camera from "./Camera";
 import { motion } from "framer-motion";
 import DetectedResult from "./DetectedResult";
 import DetectIndicator from "./DetectIndicator";
-import { useRouter } from "next/router";
 import SelectGenderModal from "./SelectGenderModal";
+import React from "react";
 
 const CameraPage = () => {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const { isResizing, size } = useSize(containerRef);
 
@@ -145,4 +144,4 @@ const Button = styled(motion.button)<{ bg: string; font: string }>`
   -webkit-tap-highlight-color: transparent;
 `;
 
-export default CameraPage;
+export default React.memo(CameraPage);

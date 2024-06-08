@@ -1,11 +1,12 @@
 import Render from "@/components/Render";
-
 import { isModelDownloadedAtom } from "@/context/atoms";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import * as faceapi from "face-api.js";
-import ModelLoading from "@/components/ModelLoading";
-import CameraPage from "@/components/CameraPage";
+
+import dynamic from "next/dynamic";
+const ModelLoading = dynamic(() => import("@/components/ModelLoading"));
+const CameraPage = dynamic(() => import("@/components/CameraPage"));
 
 function Home() {
   const [isModelDownloaded, setIsModelDownloaded] = useAtom(

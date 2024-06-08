@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import HeadMeta from "./HeadMeta";
+import React from "react";
 
 type RenderProps = {
-  render: React.FC<any>;
+  render: React.FC<any> | React.ComponentType<any>;
   [key: string]: any;
   title?: string | undefined;
   description?: string | undefined;
@@ -48,4 +49,4 @@ const MobileContainer = styled.main`
   }
 `;
 
-export default Render;
+export default React.memo(Render);

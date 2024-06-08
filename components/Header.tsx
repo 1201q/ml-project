@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Back from "@/public/back.svg";
 import { useRouter } from "next/router";
+import React from "react";
 
 interface PropsType {
   currentMenu?: string;
@@ -52,4 +53,4 @@ const BackButton = styled.button`
   }
 `;
 
-export default Header;
+export default React.memo(Header);

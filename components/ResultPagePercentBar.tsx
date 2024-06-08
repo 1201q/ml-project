@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import React from "react";
 import styled from "styled-components";
 
 interface PropsType {
@@ -84,4 +85,4 @@ const Bar = styled.div<{ width: number; opacity: number }>`
   border-bottom-left-radius: 4px;
 `;
 
-export default ResultPagePercentBar;
+export default React.memo(ResultPagePercentBar);

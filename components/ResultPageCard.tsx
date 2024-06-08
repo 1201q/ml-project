@@ -6,6 +6,7 @@ interface PropsType {
   rank: number;
   percent: number;
   fit?: "cover" | "contain";
+  priority: boolean;
 }
 
 const ResultPageCard: React.FC<PropsType> = ({
@@ -13,6 +14,7 @@ const ResultPageCard: React.FC<PropsType> = ({
   rank,
   percent,
   fit = "cover",
+  priority,
 }) => {
   return (
     <Item>
@@ -22,7 +24,7 @@ const ResultPageCard: React.FC<PropsType> = ({
         fill
         style={{ objectFit: fit, zIndex: 2 }}
         placeholder="blur"
-        priority={true}
+        priority={priority}
         sizes="50vw"
       />
       {fit === "contain" && (
