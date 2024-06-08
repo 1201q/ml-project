@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Header from "./Header";
 import ResultPageCard from "./ResultPageCard";
 import ResultPagePercentBar from "./ResultPagePercentBar";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import ShareModal from "./ShareModal";
 
@@ -33,6 +33,14 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
   const containerRef = useRef(null);
   const router = useRouter();
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (router.query.shareModal) {
+      setIsShareModalVisible(true);
+    } else {
+      setIsShareModalVisible(false);
+    }
+  }, [router.query]);
 
   return (
     <Container>
@@ -114,7 +122,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
           variants={reveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ root: containerRef, once: true, amount: 0.2 }}
+          viewport={{ root: containerRef, once: true, amount: 0.1 }}
         >
           {predictData?.rank.map((item, index) => (
             <ResultPagePercentBar
@@ -144,7 +152,10 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
             </Button>
             <Button
               onClick={() => {
-                setIsShareModalVisible(true);
+                router.push({
+                  pathname: "/stage/result",
+                  query: { shareModal: "true" },
+                });
               }}
               bg={"rgb(49, 130, 246)"}
               font={"white"}
@@ -174,11 +185,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
           </ButtonContainer>
         )}
       </ContentsContainer>
-      <AnimatePresence>
-        {isShareModalVisible && (
-          <ShareModal setIsShareModalVisible={setIsShareModalVisible} />
-        )}
-      </AnimatePresence>
+      <AnimatePresence>{isShareModalVisible && <ShareModal />}</AnimatePresence>
     </Container>
   );
 };

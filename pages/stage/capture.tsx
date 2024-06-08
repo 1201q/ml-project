@@ -38,13 +38,4 @@ function Home() {
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (
-//   ctx: any
-// ): Promise<any> => {
-//   // const access = ctx?.query.access ? true : false;
-//   // if (!access) {
-//   //   return { redirect: { destination: "/terms", permanent: false } };
-//   // }
-//   // return { redirect: { destination: "", permanent: false } };
-// };
 export default Home;

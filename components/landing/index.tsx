@@ -30,7 +30,7 @@ const LandingPage = () => {
           시작하기
         </Button>
         <BottomSmallText>
-          이 프로젝트는 이하택, 홍지찬, 황준서의 머신러닝 프로젝트에요.
+          이하택, 홍지찬, 황준서의 머신러닝 프로젝트입니다.
         </BottomSmallText>
       </BottomContainer>
     </Container>
@@ -103,7 +103,7 @@ const BottomContainer = styled.div`
 const Button = styled(motion.button)`
   width: calc(100% - 40px);
   height: 55px;
-  border-radius: 17px;
+  border-radius: 15px;
   background-color: rgb(49, 130, 246);
   color: white;
   font-size: 18px;

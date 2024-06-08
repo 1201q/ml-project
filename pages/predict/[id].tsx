@@ -10,7 +10,15 @@ import ResultPage from "@/components/ResultPage";
 
 const Predict = ({ data }: { data: ExtendedPredictDataType }) => {
   useHydrateAtoms([[predictDataAtom, data]], { dangerouslyForceHydrate: true });
-  return <Render render={ResultPage} isSharePage={true} name={data.name} />;
+  return (
+    <Render
+      render={ResultPage}
+      isSharePage={true}
+      name={data.name}
+      title={`${data.name}님이 공유 | AI로 연예인 닮은꼴 찾기 - 세상에 나쁜 얼굴은 없다`}
+      description={`${data.name}님이 연예인 닮은꼴을 공유했어요. | AI로 연예인 닮은꼴 찾기 - 세상에 나쁜 얼굴은 없다`}
+    />
+  );
 };
 const getData = async (id: string) => {
   try {

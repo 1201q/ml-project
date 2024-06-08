@@ -1,14 +1,23 @@
 import styled from "styled-components";
+import HeadMeta from "./HeadMeta";
 
 type RenderProps = {
   render: React.FC<any>;
   [key: string]: any;
+  title?: string | undefined;
+  description?: string | undefined;
 };
 
-const Render = ({ render: Render, ...props }: RenderProps) => {
+const Render = ({
+  render: Render,
+  title,
+  description,
+  ...props
+}: RenderProps) => {
   return (
     <Container>
       <MobileContainer>
+        <HeadMeta title={title} description={description} />
         <Render {...props} />
       </MobileContainer>
     </Container>

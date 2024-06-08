@@ -3,6 +3,7 @@ import "@/styles/reset.css";
 import { ThemeProvider } from "styled-components";
 import { theme } from "@/styles/theme";
 import "@/utils/firebase";
+import Head from "next/head";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

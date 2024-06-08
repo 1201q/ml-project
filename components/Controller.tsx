@@ -1,5 +1,4 @@
 import { uploadedImageAtom } from "@/context/atoms";
-import nextURLPush from "@/utils/nextURLPush";
 import { motion } from "framer-motion";
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -24,7 +23,7 @@ const Controller = () => {
             height: image.height,
             blob: file,
           });
-          nextURLPush(router, "/stage/upload");
+          router.push("/stage/upload");
         };
         image.src = url;
       };

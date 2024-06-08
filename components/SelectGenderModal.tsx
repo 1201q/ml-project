@@ -20,7 +20,7 @@ const SelectGenderModal = () => {
               router.replace(
                 {
                   pathname: "/stage/post",
-                  query: { access: true, gender: "male" },
+                  query: { gender: "male" },
                 },
                 "/stage/post"
               )
@@ -36,7 +36,7 @@ const SelectGenderModal = () => {
               router.replace(
                 {
                   pathname: "/stage/post",
-                  query: { access: true, gender: "female" },
+                  query: { gender: "female" },
                 },
                 "/stage/post"
               )
@@ -91,7 +91,7 @@ const ButtonContainer = styled.div`
 const Button = styled(motion.button)<{ bg: string; font: string }>`
   width: 100%;
   height: 55px;
-  border-radius: 12px;
+  border-radius: 15px;
   background-color: ${(props) => props.bg};
   color: ${(props) => props.font};
   font-size: 17px;

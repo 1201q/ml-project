@@ -1,4 +1,3 @@
-import { SetState } from "@/types/types";
 import { motion } from "framer-motion";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -10,13 +9,9 @@ import { addDoc, collection, doc } from "firebase/firestore";
 import { PuffLoader } from "react-spinners";
 import { useRouter } from "next/router";
 
-const ShareModal = ({
-  setIsShareModalVisible,
-}: {
-  setIsShareModalVisible: SetState<boolean>;
-}) => {
-  const modalRef = useRef(null);
+const ShareModal = () => {
   const router = useRouter();
+  const modalRef = useRef(null);
   const [name, setName] = useState("");
   const [predictData, setPredictData] = useAtom(predictDataAtom);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +45,7 @@ const ShareModal = ({
   };
 
   useOutSideClick([modalRef], () => {
-    setIsShareModalVisible(false);
+    router.back();
   });
 
   useEffect(() => {
@@ -70,7 +65,7 @@ const ShareModal = ({
   const onShare = () => {
     const origin = window.location.origin;
     navigator.share({
-      title: `${name}의 연예인 얼굴 분석!`,
+      title: `${name}님이 공유 | AI로 연예인 닮은꼴 찾기 - 세상에 나쁜 얼굴은 없다`,
       url: `${origin}/predict/${dbid}`,
     });
   };
@@ -82,7 +77,7 @@ const ShareModal = ({
         onSubmit={onSubmit}
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        exit={{ y: 300, transition: { duration: 0.2 } }}
+        exit={{ y: 300, scale: 0.5, transition: { duration: 0.2 } }}
       >
         {!isLoading && !isComplete && (
           <>
@@ -160,7 +155,7 @@ const ShareModal = ({
                 whileHover={{ filter: "brightness(0.8)" }}
                 type="button"
                 onClick={() => {
-                  setIsShareModalVisible(false);
+                  router.back();
                 }}
               >
                 닫기

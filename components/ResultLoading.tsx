@@ -3,9 +3,8 @@ import styled from "styled-components";
 import Header from "./Header";
 import { PuffLoader } from "react-spinners";
 import { useRouter } from "next/router";
-import nextURLPush from "@/utils/nextURLPush";
 import { useEffect, useState } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { detectedFaceImageAtom, predictDataAtom } from "@/context/atoms";
 import dataURLtoBlob from "@/utils/blob";
 import axios from "axios";
@@ -87,7 +86,6 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
             <SmallText>다시 시도해주세요</SmallText>
           </TitleContainer>
         )}
-
         {isLoading && !isComplete && (
           <LoadingContainer>
             <PuffLoader
@@ -107,7 +105,7 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
         >
           <Button
             onClick={() => {
-              nextURLPush(router, "/stage/result", true);
+              router.replace("/stage/result");
             }}
             bg={"rgb(49, 130, 246)"}
             font={"white"}
