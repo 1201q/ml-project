@@ -363,9 +363,10 @@ const ContentsContainer = styled.div`
   scrollbar-width: none; */
 `;
 const TitleText = styled(motion.p)`
-  font-size: 28px;
+  font-size: 27px;
   font-weight: 700;
   line-height: 130%;
+  letter-spacing: -0.4px;
 `;
 
 const TitleContainer = styled(motion.div)`
