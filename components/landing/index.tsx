@@ -32,6 +32,21 @@ const LandingPage = () => {
         <BottomSmallText>
           이하택, 홍지찬, 황준서의 머신러닝 프로젝트입니다.
         </BottomSmallText>
+
+        <div style={{ marginTop: "12px" }}>
+          <GithubLink
+            href={"https://github.com/LeeHataeg/FaceRecognition"}
+            target="blank"
+          >
+            ML / Backend Github
+          </GithubLink>
+          <GithubLink
+            href={"https://github.com/1201q/ml-project"}
+            target="blank"
+          >
+            FE Github
+          </GithubLink>
+        </div>
       </BottomContainer>
     </Container>
   );
@@ -64,7 +79,7 @@ const TextContainer = styled.div`
 `;
 
 const BigText = styled.p`
-  font-size: 40px;
+  font-size: 38px;
   font-weight: 700;
   letter-spacing: 0px;
   line-height: 120%;
@@ -96,8 +111,8 @@ const BottomContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 140px;
-  padding-top: 20px;
+  height: 150px;
+  padding-top: 10px;
 `;
 
 const Button = styled(motion.button)`
@@ -109,17 +124,27 @@ const Button = styled(motion.button)`
   font-size: 18px;
   font-weight: 600;
   -webkit-tap-highlight-color: transparent;
+  margin-bottom: 20px;
 `;
 
 const BottomSmallText = styled.p`
-  margin-top: 20px;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.5px;
-  line-height: 120%;
+  line-height: 140%;
   color: gray;
   text-align: center;
   padding: 0px 20px;
+`;
+
+const GithubLink = styled.a`
+  font-size: 11px;
+  font-weight: 400;
+  background-color: #ebebeb4a;
+  padding: 4px 7px;
+  border-radius: 5px;
+  color: gray;
+  margin: 0px 5px;
 `;
 
 export default LandingPage;
