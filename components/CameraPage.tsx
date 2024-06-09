@@ -121,6 +121,7 @@ const CameraContainer = styled(motion.div)`
   align-items: center;
   justify-content: center;
   height: calc(100% - 190px);
+
   background-color: black;
   overflow: hidden;
   position: relative;

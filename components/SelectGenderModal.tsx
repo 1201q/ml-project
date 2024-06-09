@@ -1,9 +1,24 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { PuffLoader } from "react-spinners";
 import styled from "styled-components";
 
 const SelectGenderModal = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setIsLoading(true);
+    });
+    return () => {
+      router.events.off("routeChangeStart", () => {
+        setIsLoading(true);
+      });
+    };
+  }, []);
+
   return (
     <Container>
       <ModalContainer initial={{ y: 100 }} animate={{ y: 0 }}>
@@ -44,6 +59,18 @@ const SelectGenderModal = () => {
             여자에요
           </Button>
         </ButtonContainer>
+        {isLoading && (
+          <LoadingContainer>
+            <div style={{ marginRight: "12px" }}>
+              <PuffLoader
+                loading={true}
+                color="rgb(49,130,246)"
+                speedMultiplier={1}
+                size={60}
+              />
+            </div>
+          </LoadingContainer>
+        )}
       </ModalContainer>
     </Container>
   );
@@ -96,5 +123,15 @@ const Button = styled(motion.button)<{ bg: string; font: string }>`
   font-size: 17px;
   font-weight: 600;
   -webkit-tap-highlight-color: transparent;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: white;
 `;
 export default SelectGenderModal;

@@ -113,12 +113,14 @@ const ShareModal = () => {
         )}
         {isLoading && !isComplete && (
           <LoadingContainer>
-            <PuffLoader
-              loading={true}
-              color="rgb(49,130,246)"
-              speedMultiplier={1}
-              size={70}
-            />
+            <div style={{ marginRight: "12px" }}>
+              <PuffLoader
+                loading={true}
+                color="rgb(49,130,246)"
+                speedMultiplier={1}
+                size={70}
+              />
+            </div>
           </LoadingContainer>
         )}
         {!isLoading && isComplete && (

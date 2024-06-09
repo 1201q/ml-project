@@ -110,7 +110,7 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
                 name={predictData?.rank?.slice(-1)[0].name}
                 percent={predictData?.rank?.slice(-1)[0].probability}
                 fit="contain"
-                priority={false}
+                priority={true}
               />
             </ItemTopContainer>
           </motion.div>

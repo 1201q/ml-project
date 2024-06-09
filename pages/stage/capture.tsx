@@ -5,8 +5,20 @@ import React, { useEffect } from "react";
 import * as faceapi from "face-api.js";
 
 import dynamic from "next/dynamic";
-const ModelLoading = dynamic(() => import("@/components/ModelLoading"));
-const CameraPage = dynamic(() => import("@/components/CameraPage"));
+const ModelLoading = dynamic(() => import("@/components/ModelLoading"), {
+  loading: () => (
+    <div
+      style={{ width: "100%", height: "100%", backgroundColor: "black" }}
+    ></div>
+  ),
+});
+const CameraPage = dynamic(() => import("@/components/CameraPage"), {
+  loading: () => (
+    <div
+      style={{ width: "100%", height: "100%", backgroundColor: "black" }}
+    ></div>
+  ),
+});
 
 function Home() {
   const [isModelDownloaded, setIsModelDownloaded] = useAtom(
