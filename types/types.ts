@@ -16,7 +16,8 @@ export type StageType = "select" | "capture" | "import";
 export type SetState<T> = Dispatch<SetStateAction<T>>;
 
 export interface PredictDataType {
-  rank: PredictionsType[];
+  male: PredictionsType[];
+  female: PredictionsType[];
   gender: "male" | "female";
 }
 

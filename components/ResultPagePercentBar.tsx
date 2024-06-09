@@ -6,9 +6,15 @@ interface PropsType {
   name: string;
   rank: number;
   percent: number;
+  color: string;
 }
 
-const ResultPagePercentBar: React.FC<PropsType> = ({ rank, name, percent }) => {
+const ResultPagePercentBar: React.FC<PropsType> = ({
+  rank,
+  name,
+  percent,
+  color,
+}) => {
   return (
     <Container>
       <ChartRank>
@@ -20,6 +26,7 @@ const ResultPagePercentBar: React.FC<PropsType> = ({ rank, name, percent }) => {
           {percent.toFixed(2)}%
         </Percent>
         <Bar
+          color={color}
           width={Number(percent.toFixed(2))}
           opacity={percent < 3 ? 0.2 : 0.3}
         ></Bar>
@@ -73,11 +80,11 @@ const Percent = styled.p<{ weight: number }>`
   z-index: 2;
   letter-spacing: -0.7px;
 `;
-const Bar = styled.div<{ width: number; opacity: number }>`
+const Bar = styled.div<{ width: number; opacity: number; color: string }>`
   width: ${(props) => `${props.width}%`};
   height: 100%;
   position: absolute;
-  background-color: ${(props) => `rgba(49, 130, 246, ${props.opacity})`};
+  background-color: ${(props) => props.color};
   z-index: 1;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;

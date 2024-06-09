@@ -1,5 +1,5 @@
 import { predictDataAtom } from "@/context/atoms";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import { useAtom } from "jotai";
 import styled from "styled-components";
 import Header from "./Header";
@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import React from "react";
 import dynamic from "next/dynamic";
+
 const ShareModal = dynamic(() => import("@/components/ShareModal"));
 
 const reveal = {
@@ -28,12 +29,30 @@ const reveal = {
 interface PropsType {
   isSharePage: boolean;
   name: string | null;
+  gender: "female" | "male" | null;
 }
 
-const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
-  const [predictData] = useAtom(predictDataAtom);
+const ResultPage: React.FC<PropsType> = ({
+  isSharePage = false,
+  name,
+  gender,
+}) => {
   const containerRef = useRef(null);
   const router = useRouter();
+  const [predictData] = useAtom(predictDataAtom);
+  const userGender = gender ? gender : predictData?.gender;
+
+  const topPredictData =
+    userGender === "male" ? predictData?.male : predictData?.female;
+  const bottomPredictData =
+    userGender === "male" ? predictData?.female : predictData?.male;
+
+  const bottomContainerRef = useRef(null);
+  const isBottomContentsInView = useInView(bottomContainerRef, {
+    root: containerRef,
+    margin: "0px 0px -600px 0px",
+  });
+
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
   useEffect(() => {
@@ -44,100 +63,227 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
     }
   }, [router.query]);
 
+  const getBgColor = (changed: boolean) => {
+    const blue =
+      "linear-gradient(rgba(49, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 60%)";
+    const red =
+      "linear-gradient(rgba(240, 68, 82, 0.15) 0%, rgba(0, 0, 0, 0) 50%)";
+
+    if (userGender === "male") {
+      return !changed ? blue : red;
+    } else {
+      return !changed ? red : blue;
+    }
+  };
+
   return (
-    <Container>
+    <Container color={getBgColor(isBottomContentsInView)}>
       <Header currentMenu="결과" />
       <ContentsContainer ref={containerRef}>
-        <TitleContainer variants={reveal} initial="hidden" animate="visible">
-          {isSharePage && <TitleText>{name}님과</TitleText>}
-          <TitleText>가장 닮은 연예인은</TitleText>
-          <TitleText>{predictData?.rank[0].name}입니다</TitleText>
-        </TitleContainer>
-        {predictData?.rank && (
-          <ItemContainer>
-            <ItemTopContainer
-              variants={reveal}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ root: containerRef, once: true }}
-            >
-              <ResultPageCard
-                rank={1}
-                name={predictData?.rank[0].name}
-                percent={predictData?.rank[0].probability}
-                fit={"contain"}
-                priority={true}
-              />
-            </ItemTopContainer>
-            <ItemGridContainer
-              variants={reveal}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ root: containerRef, once: true }}
-            >
-              {predictData?.rank?.slice(1, 5).map((item, index) => (
+        <>
+          <TitleContainer variants={reveal} initial="hidden" animate="visible">
+            {isSharePage && <TitleText>{name}님과</TitleText>}
+            <TitleText>
+              가장 닮은 {userGender === "male" ? "남자" : "여자"} 연예인은
+            </TitleText>
+            <TitleText>
+              {topPredictData && topPredictData[0].name}입니다
+            </TitleText>
+          </TitleContainer>
+          {topPredictData && (
+            <ItemContainer>
+              <ItemTopContainer
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ root: containerRef, once: true }}
+              >
                 <ResultPageCard
-                  key={`card-${item.name}`}
-                  rank={item.rank}
-                  name={item.name}
-                  percent={item.probability}
-                  priority={index < 3 ? true : false}
+                  rank={1}
+                  name={topPredictData[0].name}
+                  percent={topPredictData[0].probability}
+                  fit={"contain"}
+                  priority={true}
                 />
-              ))}
-            </ItemGridContainer>
-          </ItemContainer>
-        )}
-        <TitleContainer
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ root: containerRef, once: true, amount: 0.4 }}
-        >
-          <TitleText>가장 안 닮은 연예인은...</TitleText>
-          <TitleText>{predictData?.rank?.slice(-1)[0].name}입니다</TitleText>
-        </TitleContainer>
-        {predictData?.rank?.slice(-1)[0] && (
-          <motion.div
+              </ItemTopContainer>
+              <ItemGridContainer
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ root: containerRef, once: true }}
+              >
+                {topPredictData?.slice(1, 5).map((item, index) => (
+                  <ResultPageCard
+                    key={`card-${item.name}`}
+                    rank={item.rank}
+                    name={item.name}
+                    percent={item.probability}
+                    priority={index < 3 ? true : false}
+                  />
+                ))}
+              </ItemGridContainer>
+            </ItemContainer>
+          )}
+          <TitleContainer
             variants={reveal}
             initial="hidden"
             whileInView="visible"
-            viewport={{ root: containerRef, once: true }}
-            style={{ marginBottom: "50px" }}
+            viewport={{ root: containerRef, once: true, amount: 0.4 }}
           >
-            <ItemTopContainer>
-              <ResultPageCard
-                rank={predictData?.rank.length}
-                name={predictData?.rank?.slice(-1)[0].name}
-                percent={predictData?.rank?.slice(-1)[0].probability}
-                fit="contain"
-                priority={true}
-              />
-            </ItemTopContainer>
-          </motion.div>
-        )}
-        <TitleContainer
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ root: containerRef, once: true, amount: 0.4 }}
-        >
-          <TitleText>분석 결과</TitleText>
-        </TitleContainer>
-        <ChartContainer
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ root: containerRef, once: true, amount: 0.1 }}
-        >
-          {predictData?.rank.map((item, index) => (
-            <ResultPagePercentBar
-              key={`bar-${item.name}`}
-              name={item.name}
-              rank={item.rank}
-              percent={item.probability}
-            />
-          ))}
-        </ChartContainer>
+            <TitleText>가장 안 닮은 연예인은...</TitleText>
+            <TitleText>{topPredictData?.slice(-1)[0].name}입니다</TitleText>
+          </TitleContainer>
+          {topPredictData?.slice(-1)[0] && (
+            <motion.div
+              variants={reveal}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ root: containerRef, once: true }}
+              style={{ marginBottom: "50px" }}
+            >
+              <ItemTopContainer>
+                <ResultPageCard
+                  rank={topPredictData.length}
+                  name={topPredictData?.slice(-1)[0].name}
+                  percent={topPredictData?.slice(-1)[0].probability}
+                  fit="contain"
+                  priority={true}
+                />
+              </ItemTopContainer>
+            </motion.div>
+          )}
+          <TitleContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true, amount: 0.4 }}
+          >
+            <TitleText>분석 결과</TitleText>
+          </TitleContainer>
+          <ChartContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true, amount: 0.1 }}
+          >
+            {topPredictData &&
+              topPredictData.map((item, index) => (
+                <ResultPagePercentBar
+                  key={`bar-${item.name}`}
+                  name={item.name}
+                  rank={item.rank}
+                  percent={item.probability}
+                  color={
+                    userGender === "male"
+                      ? "rgba(49, 130, 246, 0.3)"
+                      : "rgba(240, 68, 82, 0.2)"
+                  }
+                />
+              ))}
+          </ChartContainer>
+        </>
+        <div ref={bottomContainerRef}>
+          <TitleContainer variants={reveal} initial="hidden" animate="visible">
+            <TitleText>
+              {userGender === "male" ? "여자" : "남자"} 연예인 중 가장 닮은
+              사람은
+            </TitleText>
+            <TitleText>
+              {bottomPredictData && bottomPredictData[0].name}입니다
+            </TitleText>
+          </TitleContainer>
+          {bottomPredictData && (
+            <ItemContainer>
+              <ItemTopContainer
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ root: containerRef, once: true }}
+              >
+                <ResultPageCard
+                  rank={1}
+                  name={bottomPredictData[0].name}
+                  percent={bottomPredictData[0].probability}
+                  fit={"contain"}
+                  priority={false}
+                />
+              </ItemTopContainer>
+              <ItemGridContainer
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ root: containerRef, once: true }}
+              >
+                {bottomPredictData?.slice(1, 5).map((item, index) => (
+                  <ResultPageCard
+                    key={`card-${item.name}`}
+                    rank={item.rank}
+                    name={item.name}
+                    percent={item.probability}
+                    priority={false}
+                  />
+                ))}
+              </ItemGridContainer>
+            </ItemContainer>
+          )}
+          <TitleContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true, amount: 0.4 }}
+          >
+            <TitleText>가장 안 닮은 연예인은...</TitleText>
+            <TitleText>{bottomPredictData?.slice(-1)[0].name}입니다</TitleText>
+          </TitleContainer>
+          {bottomPredictData?.slice(-1)[0] && (
+            <motion.div
+              variants={reveal}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ root: containerRef, once: true }}
+              style={{ marginBottom: "50px" }}
+            >
+              <ItemTopContainer>
+                <ResultPageCard
+                  rank={bottomPredictData.length}
+                  name={bottomPredictData?.slice(-1)[0].name}
+                  percent={bottomPredictData?.slice(-1)[0].probability}
+                  fit="contain"
+                  priority={false}
+                />
+              </ItemTopContainer>
+            </motion.div>
+          )}
+          <TitleContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true, amount: 0.4 }}
+          >
+            <TitleText>분석 결과</TitleText>
+          </TitleContainer>
+          <ChartContainer
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ root: containerRef, once: true, amount: 0.1 }}
+          >
+            {bottomPredictData &&
+              bottomPredictData.map((item, index) => (
+                <ResultPagePercentBar
+                  key={`bar-${item.name}`}
+                  name={item.name}
+                  rank={item.rank}
+                  percent={item.probability}
+                  color={
+                    userGender === "male"
+                      ? "rgba(240, 68, 82, 0.2)"
+                      : "rgba(49, 130, 246, 0.3)"
+                  }
+                />
+              ))}
+          </ChartContainer>
+        </div>
 
         {!isSharePage ? (
           <ButtonContainer
@@ -194,13 +340,13 @@ const ResultPage: React.FC<PropsType> = ({ isSharePage = false, name }) => {
     </Container>
   );
 };
-const Container = styled(motion.div)`
+const Container = styled(motion.div)<{ color: string }>`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
-  background: linear-gradient(rgba(49, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 60%);
+  background: ${(props) => props.color};
   overflow-y: hidden;
 `;
 
@@ -209,12 +355,12 @@ const ContentsContainer = styled.div`
   height: calc(100% - 60px);
   overflow-y: scroll;
 
-  ::-webkit-scrollbar {
+  /* ::-webkit-scrollbar {
     display: none;
   }
 
   -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: none; */
 `;
 const TitleText = styled(motion.p)`
   font-size: 28px;

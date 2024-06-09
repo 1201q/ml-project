@@ -21,8 +21,7 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
   }, []);
 
   const getPredictData = async (gender: "female" | "male") => {
-    let url =
-      `${process.env.NEXT_PUBLIC_GCP_API_URL}/predict/${gender}` as string;
+    let url = `${process.env.NEXT_PUBLIC_GCP_API_URL}/predict` as string;
     const formData = new FormData();
 
     if (detectedFaceImage?.blob) {
@@ -35,10 +34,14 @@ const ResultLoading = ({ gender }: { gender: "male" | "female" }) => {
     axios
       .post(url, formData)
       .then((res) => {
-        if (res.data.predictions) {
-          const data = res.data.predictions;
+        if (res.data) {
+          const data = res.data;
 
-          setPredictData({ gender: gender, rank: data });
+          setPredictData({
+            gender: gender,
+            male: data.male_predictions,
+            female: data.female_predictions,
+          });
           setIsComplete(true);
         } else {
           setIsComplete(false);
