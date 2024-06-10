@@ -11,6 +11,8 @@ interface PropsType {
   devices: MediaDeviceInfo[];
   selectDevice: MediaDeviceInfo | undefined;
   setSelectDevice: SetState<MediaDeviceInfo | undefined>;
+  isMirrored: boolean;
+  setIsMirrored: SetState<boolean>;
 }
 
 const CameraSetting: React.FC<PropsType> = ({
@@ -19,6 +21,8 @@ const CameraSetting: React.FC<PropsType> = ({
   devices,
   selectDevice,
   setSelectDevice,
+  isMirrored,
+  setIsMirrored,
 }) => {
   const modalRef = useRef(null);
   useOutSideClick([modalRef], () => {
@@ -43,20 +47,38 @@ const CameraSetting: React.FC<PropsType> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, transition: { duration: 0.1 } }}
           >
-            {devices.map((option) => (
+            {devices?.map((option) => (
               <ModalOption
                 whileTap={{ scale: 0.95, backgroundColor: "#f2f4f6" }}
                 key={option.label}
-                $isselect={selectDevice?.deviceId === option.deviceId}
+                $isselect={selectDevice?.deviceId === option?.deviceId}
                 onClick={() => {
                   setSelectDevice(option);
                   setIsCameraSettingModalOpen(false);
                 }}
               >
                 {option.label}{" "}
-                {selectDevice?.deviceId === option.deviceId && "(현재)"}
+                {selectDevice?.deviceId === option?.deviceId && "(현재)"}
               </ModalOption>
             ))}
+            <ButtonContainer>
+              <ModalButton
+                isMirroed={!isMirrored}
+                onClick={() => {
+                  setIsMirrored(false);
+                }}
+              >
+                좌우반전 끄기
+              </ModalButton>
+              <ModalButton
+                isMirroed={isMirrored}
+                onClick={() => {
+                  setIsMirrored(true);
+                }}
+              >
+                좌우반전 켜기
+              </ModalButton>
+            </ButtonContainer>
           </Modal>
         )}
       </AnimatePresence>
@@ -109,6 +131,22 @@ const ModalOption = styled(motion.li)<{ $isselect: boolean }>`
   padding: 5px 8px;
   color: ${(props) => (props.$isselect ? "rgb(49,130,246)" : "black")};
   font-weight: ${(props) => (props.$isselect ? "500" : "300")};
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  margin: 4px 5px;
+  gap: 7px;
+`;
+
+const ModalButton = styled(motion.button)<{ isMirroed: boolean }>`
+  width: calc(100% - 10px);
+  padding: 7px 8px;
+  border-radius: 7px;
+  background-color: ${(props) =>
+    props.isMirroed ? "rgb(49, 130, 246)" : "#e8f3ff"};
+  text-align: center;
+  color: ${(props) => (props.isMirroed ? "white" : "#3182f6")};
 `;
 
 export default CameraSetting;

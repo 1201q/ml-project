@@ -6,16 +6,17 @@ import useDetectCamera from "./hooks/useDetectCamera";
 import { capturedImageAtom } from "@/context/atoms";
 import { useAtom } from "jotai";
 import { SetState, SizeType } from "@/types/types";
-import { useRouter } from "next/router";
 
 const Camera = ({
   size,
   setIsResultVisible,
   selectDevice,
+  isMirrored,
 }: {
   size: SizeType;
   setIsResultVisible: SetState<boolean>;
-  selectDevice: MediaDeviceInfo;
+  selectDevice: MediaDeviceInfo | undefined;
+  isMirrored: boolean;
 }) => {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -63,16 +64,21 @@ const Camera = ({
           }}
           screenshotQuality={1}
           screenshotFormat="image/jpeg"
-          mirrored={true}
-          videoConstraints={{
-            deviceId: selectDevice.deviceId,
-          }}
+          mirrored={isMirrored}
+          videoConstraints={
+            !selectDevice
+              ? {
+                  facingMode: "user",
+                }
+              : { deviceId: selectDevice.deviceId }
+          }
           onCanPlay={() => {
             setIsCameraReady(true);
           }}
         />
         {isCameraReady && (
           <Canvas
+            isMirrored={isMirrored}
             ref={canvasRef}
             width={cameraSize.width}
             height={cameraSize.height}
@@ -112,11 +118,11 @@ const CaptureButton = styled(motion.button)`
   background-color: white;
   border-radius: 50%;
 `;
-const Canvas = styled.canvas`
+const Canvas = styled.canvas<{ isMirrored: boolean }>`
   position: absolute;
   left: 0;
   z-index: 2;
-  transform: scaleX(-1);
+  transform: ${(props) => (props.isMirrored ? "scaleX(-1)" : "none")};
 `;
 
 export default Camera;

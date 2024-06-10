@@ -29,6 +29,7 @@ const CameraPage = () => {
     MediaDeviceInfo | undefined
   >();
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [isMirrored, setIsMirrored] = useState(true);
 
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((mediaDevices) => {
@@ -36,7 +37,6 @@ const CameraPage = () => {
         (media) => media.kind === "videoinput"
       );
       setDevices(devices);
-      setSelectDevice(devices[0]);
     });
   }, [setDevices, setSelectDevice]);
 
@@ -51,17 +51,14 @@ const CameraPage = () => {
   return (
     <Container>
       <CameraContainer ref={containerRef}>
-        {isCameraVisible &&
-          !isResizing &&
-          size &&
-          !isResultVisible &&
-          selectDevice && (
-            <Camera
-              size={size}
-              setIsResultVisible={setIsResultVisible}
-              selectDevice={selectDevice}
-            />
-          )}
+        {isCameraVisible && !isResizing && size && !isResultVisible && (
+          <Camera
+            size={size}
+            setIsResultVisible={setIsResultVisible}
+            selectDevice={selectDevice}
+            isMirrored={isMirrored}
+          />
+        )}
         {!isResizing && size && isResultVisible && (
           <DetectedResult
             setIsFaceDetected={setIsFaceDetected}
@@ -83,6 +80,8 @@ const CameraPage = () => {
             devices={devices}
             selectDevice={selectDevice}
             setSelectDevice={setSelectDevice}
+            setIsMirrored={setIsMirrored}
+            isMirrored={isMirrored}
           />
         )}
       </CameraContainer>
