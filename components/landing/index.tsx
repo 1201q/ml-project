@@ -79,7 +79,7 @@ const TextContainer = styled.div`
 `;
 
 const BigText = styled.p`
-  font-size: 38px;
+  font-size: 37px;
   font-weight: 700;
   letter-spacing: 0px;
   line-height: 120%;
@@ -87,7 +87,7 @@ const BigText = styled.p`
   color: black;
 
   @media screen and (max-width: 450px) {
-    font-size: 27px;
+    font-size: 25px;
     letter-spacing: -0.2px;
   }
 `;

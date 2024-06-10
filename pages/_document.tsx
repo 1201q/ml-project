@@ -62,11 +62,6 @@ export default class MyDocument extends Document {
             sizes="256x256"
             href="/images/icons/icon-256x256.png"
           />
-          <link
-            rel="apple-touch-icon"
-            sizes="512x512"
-            href="/images/icons/icon-384x384.png"
-          />
         </Head>
         <body>
           <Main />

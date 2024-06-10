@@ -1,11 +1,11 @@
 {
   "theme_color": "#fff",
-  "background_color": "#3182f6",
+  "background_color": "#fff",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "AI\ub85c \uc5f0\uc608\uc778 \ub2ee\uc740\uaf34 \ucc3e\uae30 - \uc138\uc0c1\uc5d0 \ub098\uc05c \uc5bc\uad74\uc740 \uc5c6\ub2e4",
-  "short_name": "AI\ub85c \uc5f0\uc608\uc778 \ub2ee\uc740\uaf34 \ucc3e\uae30",
+  "name": "AI 연예인 닮은꼴 찾기",
+  "short_name": "연예인 닮은꼴 찾기",
   "description": "AI\ub85c \uc5f0\uc608\uc778 \ub2ee\uc740\uaf34\uc744 \ucc3e\uc544\ubcf4\uc138\uc694.",
   "icons": [
     {
@@ -16,11 +16,6 @@
     {
       "src": "/icons/icon-256x256.png",
       "sizes": "256x256",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
       "type": "image/png"
     },
     {
