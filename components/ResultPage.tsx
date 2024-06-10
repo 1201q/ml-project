@@ -354,13 +354,6 @@ const ContentsContainer = styled.div`
   padding: 0px 20px;
   height: calc(100% - 60px);
   overflow-y: scroll;
-
-  /* ::-webkit-scrollbar {
-    display: none;
-  }
-
-  -ms-overflow-style: none;
-  scrollbar-width: none; */
 `;
 const TitleText = styled(motion.p)`
   font-size: 27px;

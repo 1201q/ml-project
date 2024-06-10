@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import useSize from "@/utils/useSize";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Controller from "./Controller";
 import Camera from "./Camera";
 
@@ -9,24 +9,59 @@ import DetectedResult from "./DetectedResult";
 import DetectIndicator from "./DetectIndicator";
 import SelectGenderModal from "./SelectGenderModal";
 import React from "react";
+import CameraSetting from "./CameraSetting";
 
 const CameraPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { isResizing, size } = useSize(containerRef);
 
+  const [isCameraVisible, setIsCameraVisible] = useState(false); // 카메라 세팅 모달에 따라 visible 결정
   const [isResultVisible, setIsResultVisible] = useState(false);
   const [isFaceDetected, setIsFaceDetected] = useState(false);
   const [isServerFaceDetected, setIsServerFaceDetected] = useState<
     boolean | "loading"
   >("loading");
   const [isGenderModalVisible, setIsGenderModalVisible] = useState(false);
+  const [isCameraSettingModalOpen, setIsCameraSettingModalOpen] =
+    useState(false);
+
+  const [selectDevice, setSelectDevice] = useState<
+    MediaDeviceInfo | undefined
+  >();
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((mediaDevices) => {
+      const devices = mediaDevices.filter(
+        (media) => media.kind === "videoinput"
+      );
+      setDevices(devices);
+      setSelectDevice(devices[0]);
+    });
+  }, [setDevices, setSelectDevice]);
+
+  useEffect(() => {
+    if (isCameraSettingModalOpen) {
+      setIsCameraVisible(false);
+    } else {
+      setIsCameraVisible(true);
+    }
+  }, [isCameraSettingModalOpen]);
 
   return (
     <Container>
       <CameraContainer ref={containerRef}>
-        {!isResizing && size && !isResultVisible && (
-          <Camera size={size} setIsResultVisible={setIsResultVisible} />
-        )}
+        {isCameraVisible &&
+          !isResizing &&
+          size &&
+          !isResultVisible &&
+          selectDevice && (
+            <Camera
+              size={size}
+              setIsResultVisible={setIsResultVisible}
+              selectDevice={selectDevice}
+            />
+          )}
         {!isResizing && size && isResultVisible && (
           <DetectedResult
             setIsFaceDetected={setIsFaceDetected}
@@ -39,6 +74,15 @@ const CameraPage = () => {
           <DetectIndicator
             isFaceDetected={isFaceDetected}
             isServerFaceDetected={isServerFaceDetected}
+          />
+        )}
+        {!isResizing && size && !isResultVisible && (
+          <CameraSetting
+            setIsCameraSettingModalOpen={setIsCameraSettingModalOpen}
+            isCameraSettingModalOpen={isCameraSettingModalOpen}
+            devices={devices}
+            selectDevice={selectDevice}
+            setSelectDevice={setSelectDevice}
           />
         )}
       </CameraContainer>

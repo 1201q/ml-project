@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 import useDetectCamera from "./hooks/useDetectCamera";
@@ -11,11 +11,12 @@ import { useRouter } from "next/router";
 const Camera = ({
   size,
   setIsResultVisible,
+  selectDevice,
 }: {
   size: SizeType;
   setIsResultVisible: SetState<boolean>;
+  selectDevice: MediaDeviceInfo;
 }) => {
-  const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [capturedImage, setCapturedImage] = useAtom(capturedImageAtom);
@@ -64,7 +65,7 @@ const Camera = ({
           screenshotFormat="image/jpeg"
           mirrored={true}
           videoConstraints={{
-            facingMode: "user",
+            deviceId: selectDevice.deviceId,
           }}
           onCanPlay={() => {
             setIsCameraReady(true);
@@ -78,6 +79,7 @@ const Camera = ({
           />
         )}
       </motion.div>
+
       <CaptureBtnContainer>
         <CaptureButton
           onClick={() => {
