@@ -4,9 +4,14 @@ import React from "react";
 interface MetaProps {
   title?: string;
   description?: string;
+  color?: string;
 }
 
-const HeadMeta: React.FC<MetaProps> = ({ title, description }) => {
+const HeadMeta: React.FC<MetaProps> = ({
+  title,
+  description,
+  color = "white",
+}) => {
   return (
     <Head>
       <title>
@@ -16,6 +21,7 @@ const HeadMeta: React.FC<MetaProps> = ({ title, description }) => {
         name="description"
         content={description || "AI로 연예인 닮은꼴을 찾아보세요!"}
       />
+      <meta name="theme-color" content={color} />
     </Head>
   );
 };

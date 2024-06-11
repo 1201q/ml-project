@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import React from "react";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 const ShareModal = dynamic(() => import("@/components/ShareModal"));
 
@@ -76,8 +77,25 @@ const ResultPage: React.FC<PropsType> = ({
     }
   };
 
+  const getTitleColor = (changed: boolean) => {
+    const blue = "#dee6fb";
+    const red = "#f8e5e6";
+
+    if (userGender === "male") {
+      return !changed ? blue : red;
+    } else {
+      return !changed ? red : blue;
+    }
+  };
+
   return (
     <Container color={getBgColor(isBottomContentsInView)}>
+      <Head>
+        <meta
+          name="theme-color"
+          content={getTitleColor(isBottomContentsInView)}
+        />
+      </Head>
       <Header currentMenu="결과" />
       <ContentsContainer ref={containerRef}>
         <>

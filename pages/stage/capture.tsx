@@ -43,7 +43,7 @@ function Home() {
   return (
     <>
       {isModelDownloaded ? (
-        <Render render={CameraPage} />
+        <Render render={CameraPage} color="black" />
       ) : (
         <Render render={ModelLoading} text="모델을 불러오고 있어요" />
       )}

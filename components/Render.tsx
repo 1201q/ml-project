@@ -7,18 +7,20 @@ type RenderProps = {
   [key: string]: any;
   title?: string | undefined;
   description?: string | undefined;
+  color?: string;
 };
 
 const Render = ({
   render: Render,
   title,
   description,
+  color,
   ...props
 }: RenderProps) => {
   return (
     <Container>
       <MobileContainer>
-        <HeadMeta title={title} description={description} />
+        <HeadMeta title={title} description={description} color={color} />
         <Render {...props} />
       </MobileContainer>
     </Container>
