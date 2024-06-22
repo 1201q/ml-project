@@ -29,9 +29,6 @@ const LandingPage = () => {
         >
           시작하기
         </Button>
-        <BottomSmallText>
-          이하택, 홍지찬, 황준서의 머신러닝 프로젝트입니다.
-        </BottomSmallText>
 
         <div style={{ marginTop: "12px" }}>
           <GithubLink
